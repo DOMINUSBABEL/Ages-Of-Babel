@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ages of Babel - Un simulador 4X Idle incremental premium. Evoluciona tu civilización desde la prehistoria, pelea en batallas épicas, realiza milagros y pinta tus propios héroes en pixel art.">
-    <title>Ages of Babel - Flagship Indie Edition</title>
+    <meta name="description" content="Ages of Babel - Un simulador 4X Idle incremental premium con fuerte influencia visual de Microcivilization. Gestiona riesgos, combate asedios y haz click para guiar a tu pueblo.">
+    <title>Ages of Babel - Microcivilization Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Press+Start+2P&display=swap');
 
         :root {
             --bg-dark: #05060b;
-            --bg-card: rgba(10, 15, 30, 0.85);
+            --bg-card: rgba(10, 15, 30, 0.88);
             --border-pixel: #3b82f6;
             --border-color: rgba(59, 130, 246, 0.25);
             --text-primary: #f8fafc;
@@ -26,7 +26,7 @@
             --mind-accent: #06b6d4;
             --mind-glow: rgba(6, 182, 212, 0.35);
 
-            --transition-speed: 0.25s;
+            --transition-speed: 0.2s;
         }
 
         body.theme-espada {
@@ -105,7 +105,7 @@
             align-items: center;
             background: var(--bg-card);
             backdrop-filter: blur(12px);
-            padding: 10px 18px;
+            padding: 8px 18px;
             border: 3px solid var(--border-pixel);
             box-shadow: 0px 4px 0px #000;
         }
@@ -319,6 +319,15 @@
             color: var(--text-secondary);
         }
 
+        /* Sockets para Líderes (Microcivilization Style) */
+        .hero-socket {
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+        .hero-socket:hover {
+            border-color: #facc15 !important;
+            box-shadow: 0 0 8px rgba(250, 204, 21, 0.3);
+        }
+
         /* Battlefield & Vista de Civilización */
         .civ-view {
             position: relative;
@@ -326,7 +335,7 @@
             border: 3px solid var(--border-pixel);
             overflow: hidden;
             display: grid;
-            grid-template-rows: 1fr 1fr;
+            grid-template-rows: 1.2fr 0.8fr;
             box-shadow: 0px 4px 0px #000;
         }
 
@@ -334,6 +343,7 @@
             position: relative;
             background: linear-gradient(to bottom, #090e22, #181d3f, #231b3c);
             overflow: hidden;
+            cursor: pointer;
         }
 
         #town-canvas {
@@ -970,7 +980,7 @@
             <header>
                 <div class="brand">
                     <h1>AGES OF BABEL</h1>
-                    <span>Indie Flagship Edition &bull; Auto-Resiliente</span>
+                    <span>Indie Flagship Edition &bull; Microcivilization Hybrid</span>
                 </div>
                 <div class="header-controls">
                     <!-- Clima -->
@@ -1080,7 +1090,7 @@
                                 <div class="fatigue-fill" id="fatigue-food"></div>
                             </div>
                             <div class="worker-controls">
-                                <span class="rate" id="rate-food">+0.2 Comida/s</span>
+                                <span class="rate" id="rate-food">+0.25 Comida/s</span>
                                 <span class="rate" id="stress-lbl-food" style="color:#ef4444;">Estrés: 0%</span>
                             </div>
                         </div>
@@ -1099,7 +1109,7 @@
                                 <div class="fatigue-fill" id="fatigue-wood"></div>
                             </div>
                             <div class="worker-controls">
-                                <span class="rate" id="rate-wood">+0.1 Madera/s</span>
+                                <span class="rate" id="rate-wood">+0.15 Madera/s</span>
                                 <span class="rate" id="stress-lbl-wood" style="color:#ef4444;">Estrés: 0%</span>
                             </div>
                         </div>
@@ -1118,7 +1128,7 @@
                                 <div class="fatigue-fill" id="fatigue-stone"></div>
                             </div>
                             <div class="worker-controls">
-                                <span class="rate" id="rate-stone">+0.05 Piedra/s</span>
+                                <span class="rate" id="rate-stone">+0.1 Piedra/s</span>
                                 <span class="rate" id="stress-lbl-stone" style="color:#ef4444;">Estrés: 0%</span>
                             </div>
                         </div>
@@ -1137,7 +1147,7 @@
                                 <div class="fatigue-fill" id="fatigue-science"></div>
                             </div>
                             <div class="worker-controls">
-                                <span class="rate" id="rate-science">+0.1 Ciencia/s</span>
+                                <span class="rate" id="rate-science">+0.12 Ciencia/s</span>
                                 <span class="rate" id="stress-lbl-science" style="color:#ef4444;">Estrés: 0%</span>
                             </div>
                         </div>
@@ -1153,14 +1163,42 @@
 
                 <!-- Panel Central: Lienzo de Civilización y Combate -->
                 <div class="civ-view" id="civ-view-panel">
-                    <!-- Vista Superior: Pueblo Isometrico y Clima -->
-                    <div class="sky-canvas-area" id="town-view-area">
+                    <!-- Vista Superior: Torre de Babel, Campamentos y Clima -->
+                    <div class="sky-canvas-area" id="town-view-area" onclick="handleTownClick(event)">
                         <canvas id="town-canvas"></canvas>
                         <canvas id="weather-canvas"></canvas>
                         
-                        <div style="position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,0.6); padding:4px 8px; border:1px solid var(--border-pixel);">
+                        <div style="position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,0.7); padding:4px 8px; border:1px solid var(--border-pixel);">
                             <span class="panel-title" style="color:#fff; font-size:7px; display:block;">MESETA DE BABEL</span>
                             <span style="font-size:10px; color:var(--text-secondary);" id="civ-desc">Era Pre-Piedra.</span>
+                        </div>
+
+                        <!-- Microcivilization Risk Circular/Linear Indicators -->
+                        <div style="position:absolute; top:12px; right:12px; z-index:10; display:flex; gap:8px; background:rgba(0,0,0,0.7); padding:6px; border:1px solid var(--border-pixel);" class="click-through-override">
+                            <div style="text-align:center;">
+                                <div style="font-size:9px; color:#ef4444; font-family:'Press Start 2P';">🔥</div>
+                                <div class="risk-bar-bg" style="width:40px; height:5px; background:#111827; border:1px solid #ef4444; margin-top:2px; overflow:hidden;">
+                                    <div id="risk-fire-fill" style="width:0%; height:100%; background:#ef4444;"></div>
+                                </div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:9px; color:#22c55e; font-family:'Press Start 2P';">🤢</div>
+                                <div class="risk-bar-bg" style="width:40px; height:5px; background:#111827; border:1px solid #22c55e; margin-top:2px; overflow:hidden;">
+                                    <div id="risk-disease-fill" style="width:0%; height:100%; background:#22c55e;"></div>
+                                </div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:9px; color:#a855f7; font-family:'Press Start 2P';">✊</div>
+                                <div class="risk-bar-bg" style="width:40px; height:5px; background:#111827; border:1px solid #a855f7; margin-top:2px; overflow:hidden;">
+                                    <div id="risk-riot-fill" style="width:0%; height:100%; background:#a855f7;"></div>
+                                </div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:9px; color:#facc15; font-family:'Press Start 2P';">⚔️</div>
+                                <div class="risk-bar-bg" style="width:40px; height:5px; background:#111827; border:1px solid #facc15; margin-top:2px; overflow:hidden;">
+                                    <div id="risk-invasion-fill" style="width:0%; height:100%; background:#facc15;"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!-- Vista Inferior: Campo de Batalla y Paraleje -->
@@ -1169,8 +1207,30 @@
                     </div>
                 </div>
 
-                <!-- Panel Derecho: Héroes, Panteón, Mazmorras, Skins y Logros -->
+                <!-- Panel Derecho: Héroes, Sockets, Panteón, Mazmorras, Skins y Logros -->
                 <div class="retro-panel">
+                    <!-- Sockets para Líderes de la Torre (Microcivilization Style) -->
+                    <div style="background:rgba(0,0,0,0.4); border:2px solid var(--border-color); padding:8px; display:flex; flex-direction:column; gap:6px;">
+                        <span class="panel-title" style="margin-top:0; font-size:7px;">Líderes Asignados (Sockets)</span>
+                        <div style="display:flex; justify-content:space-between; gap:6px;">
+                            <!-- General -->
+                            <div id="socket-general" class="hero-socket" style="flex:1; border:2px dashed var(--border-pixel); background:rgba(0,0,0,0.5); text-align:center; padding:4px; cursor:pointer;" onclick="unequipHero('general')" title="Líder Militar (Aumenta ataque físico +50%)">
+                                <div style="font-size:18px;">⚔️</div>
+                                <div style="font-size:8px; color:var(--text-secondary);" id="socket-general-name">Vacío</div>
+                            </div>
+                            <!-- Inspector -->
+                            <div id="socket-inspector" class="hero-socket" style="flex:1; border:2px dashed var(--border-pixel); background:rgba(0,0,0,0.5); text-align:center; padding:4px; cursor:pointer;" onclick="unequipHero('inspector')" title="Supervisor de Trabajo (Reduce fatiga -30%)">
+                                <div style="font-size:18px;">👷</div>
+                                <div style="font-size:8px; color:var(--text-secondary);" id="socket-inspector-name">Vacío</div>
+                            </div>
+                            <!-- Sacerdote -->
+                            <div id="socket-priest" class="hero-socket" style="flex:1; border:2px dashed var(--border-pixel); background:rgba(0,0,0,0.5); text-align:center; padding:4px; cursor:pointer;" onclick="unequipHero('priest')" title="Sumo Sacerdote (Aumenta fe sacra +50%)">
+                                <div style="font-size:18px;">🔮</div>
+                                <div style="font-size:8px; color:var(--text-secondary);" id="socket-priest-name">Vacío</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="tabs-row">
                         <button class="tab-btn active" onclick="switchTab('right-panel', 'heroes')" style="font-size:9px; padding:6px 2px;">Taverna</button>
                         <button class="tab-btn" onclick="switchTab('right-panel', 'pantheon')" style="font-size:9px; padding:6px 2px;">Panteón</button>
@@ -1808,8 +1868,7 @@
             ]
         };
 
-
-        // --- ESTADO GLOBAL DEL JUEGO ---
+        // --- ESTADO GLOBAL ---
         const game = {
             viewMode: 'fullscreen',
             era: 0,
@@ -1828,17 +1887,36 @@
             faith: 0,
             shards: 0,
 
-            // Tensión / barra de asedio
+            // Sockets de Líderes (Microcivilization Style)
+            leaders: {
+                general: null,    // Aumenta ataque +50%
+                inspector: null,  // Reduce fatiga -30%
+                priest: null      // Aumenta fe +50%
+            },
+
+            // Microcivilization Risk System (0 a 100)
+            risks: {
+                fire: 0,
+                disease: 0,
+                riot: 0,
+                invasion: 0
+            },
+            disasters: {
+                fire: { active: false, timer: 0, maxTimer: 20, nodes: [] },
+                disease: { active: false, timer: 0, maxTimer: 20 },
+                riot: { active: false, timer: 0, maxTimer: 20 }
+            },
+
             crisisActive: false,
             crisisProgress: 0,
             crisisTimer: 0,
-            crisisStage: 1, // Phase 1: Scouts, 2: Raiders, 3: Dragon
+            crisisStage: 1, // 1: Scouts, 2: Raiders, 3: Boss
 
             // Panteón Reliquias (Prestigio)
             relics: {
-                damage: 0,  // +25% daño por nivel
-                gold: 0,    // +50% oro por nivel
-                science: 0  // +25% ciencia por nivel
+                damage: 0,
+                gold: 0,
+                science: 0
             },
 
             // Asignación de Trabajadores
@@ -1848,17 +1926,17 @@
 
             // Tecnologías
             techTree: {
-                stone_tools: { id: 'stone_tools', label: 'Herramientas de Piedra', req: 30, researched: false, desc: 'Producción de Madera y Piedra +25%.' },
+                stone_tools: { id: 'stone_tools', label: 'Herramientas de Piedra', req: 30, researched: false, desc: 'Madera y Piedra +25%.' },
                 agriculture: { id: 'agriculture', label: 'Agricultura Organizada', req: 80, researched: false, desc: 'Comida +40%. Población Máx +5.' },
-                metallurgy: { id: 'metallurgy', label: 'Fundición de Bronce', req: 250, researched: false, desc: 'Daño base de todos los héroes +30%.' },
-                writing: { id: 'writing', label: 'Código Escrito', req: 600, researched: false, desc: 'Producción de Ciencia +35%.' },
-                gunpowder: { id: 'gunpowder', label: 'Pólvora Prohibida', req: 1500, researched: false, desc: 'Defensa de asedio +50%, pero fatiga acelera +20%.' },
-                stellar_map: { id: 'stellar_map', label: 'Cúpula Astral', req: 3500, researched: false, desc: 'Costo de Reliquias de Panteón -1 Fragmento.' }
+                metallurgy: { id: 'metallurgy', label: 'Fundición de Bronce', req: 250, researched: false, desc: 'Daño base de héroes +30%.' },
+                writing: { id: 'writing', label: 'Código Escrito', req: 600, researched: false, desc: 'Ciencia +35%.' },
+                gunpowder: { id: 'gunpowder', label: 'Pólvora Prohibida', req: 1500, researched: false, desc: 'Defensa de asedio +50%. Fatiga +20%.' },
+                stellar_map: { id: 'stellar_map', label: 'Cúpula Astral', req: 3500, researched: false, desc: 'Costo de Reliquias -1 Fragmento.' }
             },
 
             // Héroes
             heroes: [
-                { id: 'korg', name: 'Korg el Pionero', sprite: 'korg_0', baseSprite: 'korg', hp: 100, maxHp: 100, dmg: 7, x: 20, state: 'walk', activeBuff: '+15% Comida pasiva', isExploring: false, exploreTimer: 0 }
+                { id: 'korg', name: 'Korg el Pionero', sprite: 'korg_0', baseSprite: 'korg', hp: 100, maxHp: 100, dmg: 7, x: 20, state: 'walk', activeBuff: '+15% Comida pasiva', isExploring: false, exploreTimer: 0, rarity: 'Epic' }
             ],
             activeEnemies: [],
             isShieldActive: false,
@@ -1868,19 +1946,19 @@
 
             // Dungeons en segundo plano
             dungeonActive: false,
-            dungeonNode: 0, // 0 = 0%, 1 = 33%, 2 = 66%, 3 = 100%
+            dungeonNode: 0,
             dungeonTimer: 0,
             dungeonHeroId: null,
 
             // Puerto mercante
-            harborState: 'docked', // 'docked', 'sailing', 'loot_ready'
+            harborState: 'docked',
             harborTimer: 0,
-            harborTradeType: '', // 'gold', 'science'
+            harborTradeType: '',
             harborShipsCount: 1,
 
             // Crusaders Quest blocks
             skillBlocks: [],
-            comboClicks: [], // Para guardar secuencia
+            comboClicks: [],
             lastComboTime: 0,
             cutinTimer: 0,
 
@@ -1892,7 +1970,7 @@
             // Climatología
             weather: 'clear',
             
-            // Logros (Achievements)
+            // Logros
             achievements: {
                 first_era: { id: 'first_era', title: 'Nueva Época', desc: 'Avanza a la Edad de Piedra.', unlocked: false },
                 ultimate_combo: { id: 'ultimate_combo', title: 'Juicio Celestial', desc: 'Desata el combo triple Crusaders Quest.', unlocked: false },
@@ -1901,6 +1979,9 @@
                 custom_skin: { id: 'custom_skin', title: 'Acabado Artesanal', desc: 'Aplica una skin customizada en el editor.', unlocked: false },
                 silent_boss: { id: 'silent_boss', title: 'Supervisión Silenciosa', desc: 'Derrota una crisis de fase 3.', unlocked: false }
             },
+
+            // Citizens de la torre (Microcivilization style simulation)
+            citizens: [],
 
             // Configuraciones de Eras
             eraConfigs: [
@@ -1911,7 +1992,7 @@
             ]
         };
 
-        // --- SISTEMAS DE PARTICULAS (CANVAS RETRO PIXELS) ---
+        // --- SISTEMAS DE PARTICULAS ---
         let particles = [];
         function spawnParticle(x, y, color, speedX, speedY, life = 30) {
             particles.push({
@@ -1922,6 +2003,260 @@
             });
         }
 
+        // Sistema de partículas para el Canvas del Pueblo (Sky Canvas)
+        let townParticles = [];
+        function spawnTownParticle(x, y, color, vx, vy, life = 25) {
+            townParticles.push({
+                x: x, y: y,
+                color: color || '#fff',
+                vx: vx, vy: vy,
+                life: life, maxLife: life
+            });
+        }
+
+        // Textos flotantes para el Canvas del Pueblo
+        let townFloatingTexts = [];
+        function spawnFloatingTownText(text, x, y, color) {
+            townFloatingTexts.push({
+                text: text,
+                x: x,
+                y: y,
+                color: color || '#fff',
+                life: 35
+            });
+        }
+
+        // Nubes del pueblo
+        function initClouds() {
+            game.clouds = [];
+            for (let i = 0; i < 5; i++) {
+                game.clouds.push({
+                    x: Math.random() * 300,
+                    y: 15 + Math.random() * 40,
+                    speed: 0.08 + Math.random() * 0.1,
+                    width: 35 + Math.random() * 20,
+                    height: 5 + Math.random() * 3
+                });
+            }
+        }
+
+        // --- CITIZENS DE LA TORRE SIMULACIÓN (Microcivilization Style) ---
+        function initCitizens() {
+            game.citizens = [];
+            const levels = game.era + 1;
+            const canvasW = townCanvas.width || 350;
+            const towerCenter = canvasW / 2;
+            const groundY = (townCanvas.height || 300) - 12;
+            const floorH = 28;
+
+            for (let i = 0; i < 15; i++) {
+                const floor = Math.floor(Math.random() * levels);
+                game.citizens.push({
+                    x: towerCenter + (Math.random() - 0.5) * 50,
+                    y: groundY - (floor * floorH),
+                    floor: floor,
+                    targetX: towerCenter + (Math.random() - 0.5) * 50,
+                    state: 'walking',
+                    climbDir: 0,
+                    outfitColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'][Math.floor(Math.random() * 6)],
+                    hairColor: ['#1e293b', '#78350f', '#facc15', '#e2e8f0', '#b45309'][Math.floor(Math.random() * 5)],
+                    skinColor: ['#ffedd5', '#fca5a5', '#d97706', '#fbcfe8'][Math.floor(Math.random() * 4)],
+                    step: Math.random() * 100,
+                    carryType: null,
+                    workTimer: 0
+                });
+            }
+        }
+
+        function updateCitizensPhysics(canvasW, canvasH) {
+            const floorH = 28;
+            const towerCenter = canvasW / 2;
+            const towerWidth = 70;
+            const groundY = canvasH - 12;
+            const levels = game.era + 1;
+
+            const ladderLeftX = towerCenter - 22;
+            const ladderRightX = towerCenter + 22;
+
+            // Sincronizar citizens con población real (Hive feel)
+            while (game.citizens.length < game.population) {
+                const floor = Math.floor(Math.random() * levels);
+                game.citizens.push({
+                    x: towerCenter + (Math.random() - 0.5) * 50,
+                    y: groundY - (floor * floorH),
+                    floor: floor,
+                    targetX: towerCenter + (Math.random() - 0.5) * 50,
+                    state: 'walking',
+                    climbDir: 0,
+                    outfitColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'][Math.floor(Math.random() * 6)],
+                    hairColor: ['#1e293b', '#78350f', '#facc15', '#e2e8f0', '#b45309'][Math.floor(Math.random() * 5)],
+                    skinColor: ['#ffedd5', '#fca5a5', '#d97706', '#fbcfe8'][Math.floor(Math.random() * 4)],
+                    step: Math.random() * 100,
+                    carryType: null,
+                    workTimer: 0
+                });
+            }
+            while (game.citizens.length > game.population) {
+                game.citizens.pop();
+            }
+
+            game.citizens.forEach(c => {
+                c.step += 0.25;
+
+                // Si está enfermo
+                if (c.state === 'sick') {
+                    if (Math.random() < 0.04) {
+                        spawnTownParticle(c.x + 1, c.y - 6, '#22c55e', (Math.random() - 0.5) * 0.6, -Math.random() * 0.6, 20);
+                    }
+                    if (Math.abs(c.targetX - c.x) < 2 || Math.random() < 0.02) {
+                        c.targetX = towerCenter + (Math.random() - 0.5) * 40;
+                    }
+                    c.x += Math.sign(c.targetX - c.x) * 0.45;
+                    c.y = groundY - (c.floor * floorH);
+                    return;
+                }
+
+                // Si está protestando
+                if (c.state === 'rioting') {
+                    if (Math.random() < 0.06) {
+                        // Partículas de ira
+                        spawnTownParticle(c.x + 1, c.y - 10, '#ef4444', (Math.random()-0.5)*0.4, -0.5, 20);
+                    }
+                    if (Math.abs(c.targetX - c.x) < 2 || Math.random() < 0.04) {
+                        c.targetX = towerCenter + (Math.random() - 0.5) * 55;
+                    }
+                    c.x += Math.sign(c.targetX - c.x) * 1.0;
+                    c.y = groundY - (c.floor * floorH);
+                    return;
+                }
+
+                // Si hay una invasión y el ciudadano está en el último piso desbloqueado
+                if (game.crisisActive && c.floor === levels - 1 && Math.random() < 0.3) {
+                    c.state = 'soldier';
+                } else if (!game.crisisActive && c.state === 'soldier') {
+                    c.state = 'walking';
+                }
+
+                // Soldado defensor
+                if (c.state === 'soldier') {
+                    c.targetX = (Math.random() < 0.5) ? towerCenter - towerWidth/2 : towerCenter + towerWidth/2;
+                    if (Math.abs(c.x - c.targetX) > 2) {
+                        c.x += Math.sign(c.targetX - c.x) * 0.75;
+                    }
+                    c.y = groundY - (c.floor * floorH);
+                    return;
+                }
+
+                // Si está subiendo escaleras
+                if (c.state === 'climbing') {
+                    c.y += c.climbDir * 1.0;
+                    let targetFloorY = groundY - (c.targetFloor * floorH);
+                    
+                    if ((c.climbDir === -1 && c.y <= targetFloorY) || (c.climbDir === 1 && c.y >= targetFloorY)) {
+                        c.floor = c.targetFloor;
+                        c.y = targetFloorY;
+                        c.climbDir = 0;
+                        c.state = 'walking';
+                        c.targetX = towerCenter + (Math.random() - 0.5) * 45;
+                    }
+                    return;
+                }
+
+                // Si está yendo a trabajar afuera
+                if (c.state === 'heading_to_work') {
+                    const dist = c.targetX - c.x;
+                    if (Math.abs(dist) > 2) {
+                        c.x += Math.sign(dist) * 0.8;
+                        c.y = groundY;
+                    } else {
+                        c.state = 'working';
+                        c.workTimer = 40 + Math.random() * 30;
+                    }
+                    return;
+                }
+
+                // Si está trabajando en los campos
+                if (c.state === 'working') {
+                    c.workTimer--;
+                    if (c.workTimer <= 0) {
+                        c.state = 'returning_with_goods';
+                        c.targetX = towerCenter;
+                    }
+                    // Pequeñas chispas/virutas
+                    if (Math.random() < 0.1) {
+                        let color = '#ca8a04'; 
+                        if (c.carryType === 'wood') color = '#78350f';
+                        if (c.carryType === 'stone') color = '#4b5563';
+                        spawnTownParticle(c.x + (Math.random()-0.5)*4, c.y - 1, color, (Math.random()-0.5)*1, -1, 15);
+                    }
+                    return;
+                }
+
+                // Si está volviendo al pueblo con recursos
+                if (c.state === 'returning_with_goods') {
+                    const dist = c.targetX - c.x;
+                    if (Math.abs(dist) > 2) {
+                        c.x += Math.sign(dist) * 0.8;
+                        c.y = groundY;
+                    } else {
+                        // Unload
+                        let icon = '🌾';
+                        if (c.carryType === 'wood') { icon = '🪵'; game.wood += 1; }
+                        else if (c.carryType === 'stone') { icon = '🪨'; game.stone += 1; }
+                        else { game.food += 1; }
+                        
+                        spawnFloatingTownText(`+1 ${icon}`, c.x, c.y - 10, '#22c55e');
+                        playTone(1100, 'sine', 0.05, 0.02);
+
+                        c.carryType = null;
+                        c.state = 'walking';
+                        c.targetX = towerCenter + (Math.random() - 0.5) * 45;
+                    }
+                    return;
+                }
+
+                // Comportamiento de caminar normal por la torre
+                c.y = groundY - (c.floor * floorH);
+                const dist = c.targetX - c.x;
+
+                if (Math.abs(dist) > 2) {
+                    c.x += Math.sign(dist) * 0.65;
+                } else {
+                    if (Math.random() < 0.04) {
+                        c.targetX = towerCenter + (Math.random() - 0.5) * 50;
+                    } else if (Math.random() < 0.02 && levels > 1) {
+                        // Mandar a trabajar afuera opcionalmente
+                        const workChance = Math.random();
+                        if (c.floor === 0 && workChance < 0.35) {
+                            c.state = 'heading_to_work';
+                            if (workChance < 0.15) {
+                                c.carryType = 'food';
+                                c.targetX = 35; // granja
+                            } else if (workChance < 0.28) {
+                                c.carryType = 'wood';
+                                c.targetX = canvasW - 45; // bosque
+                            } else if (game.era >= 1) {
+                                c.carryType = 'stone';
+                                c.targetX = canvasW - 75; // mina
+                            } else {
+                                c.state = 'walking';
+                            }
+                        } else {
+                            // Subir o bajar escaleras
+                            const nextFloor = Math.floor(Math.random() * levels);
+                            if (nextFloor !== c.floor) {
+                                const ladderX = (Math.random() < 0.5) ? ladderLeftX : ladderRightX;
+                                c.state = 'moving_to_ladder';
+                                c.targetX = ladderX;
+                                c.targetFloor = nextFloor;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
         // --- RENDERIZADO DEL CAMPO DE BATALLA Y ENTORNO ---
         const bCanvas = document.getElementById('battle-canvas');
         const bCtx = bCanvas.getContext('2d');
@@ -1931,11 +2266,9 @@
         let scrollOffset = 0;
 
         function renderBattlefield() {
-            // Sincronizar dimensiones
             const activeCanvas = (game.viewMode === 'fullscreen') ? bCanvas : tbCanvas;
             const ctx = activeCanvas.getContext('2d');
             
-            // Redimensionar si es necesario
             if (game.viewMode === 'fullscreen') {
                 if (bCanvas.width !== bCanvas.parentElement.offsetWidth) {
                     bCanvas.width = bCanvas.parentElement.offsetWidth;
@@ -1954,21 +2287,20 @@
 
             ctx.imageSmoothingEnabled = false;
 
-            // 1. Dibujar Cielo
+            // Cielo
             const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
             skyGrad.addColorStop(0, conf.bg);
             skyGrad.addColorStop(1, '#000');
             ctx.fillStyle = skyGrad;
             ctx.fillRect(0, 0, w, h);
 
-            // Paralaje Capa 1: Nubes lentas
+            // Nubes lentas
             ctx.fillStyle = 'rgba(255,255,255,0.06)';
             const cloudOffset = (scrollOffset * 0.05) % 200;
             ctx.fillRect(50 - cloudOffset, 10, 40, 6);
-            ctx.fillRect(60 - cloudOffset, 16, 25, 4);
             ctx.fillRect(160 - cloudOffset, 8, 30, 5);
 
-            // Paralaje Capa 2: Montañas / Zigurats distantes
+            // Montañas lejanas
             ctx.fillStyle = 'rgba(25, 30, 45, 0.4)';
             const mountainOffset = (scrollOffset * 0.15) % 150;
             for (let i = -1; i < w / 150 + 2; i++) {
@@ -1980,7 +2312,7 @@
                 ctx.fill();
             }
 
-            // Paralaje Capa 3: Árboles medianos
+            // Árboles
             ctx.fillStyle = conf.ground2;
             const treeOffset = (scrollOffset * 0.4) % 80;
             for (let i = -1; i < w / 80 + 2; i++) {
@@ -1993,35 +2325,29 @@
                 ctx.fill();
             }
 
-            // Capa 4: Suelo de batalla
+            // Suelo
             ctx.fillStyle = conf.ground1;
             ctx.fillRect(0, h - 20, w, 20);
             ctx.fillStyle = conf.borderCol;
-            ctx.fillRect(0, h - 20, w, 3); // Borde superior del césped
+            ctx.fillRect(0, h - 20, w, 3); 
 
-            // Dibujar decorados en movimiento del suelo
+            // Texturas camino
             ctx.fillStyle = 'rgba(0,0,0,0.15)';
             const groundOffset = scrollOffset % 40;
             for (let i = -1; i < w / 40 + 2; i++) {
                 ctx.fillRect(i * 40 - groundOffset, h - 14, 8, 3);
             }
 
-            // 2. Animaciones de Héroes
+            // Héroes
             const currentScale = (game.viewMode === 'fullscreen') ? 2.5 : 1.2;
             const groundY = h - 20 - (16 * currentScale);
-
-            const hasEnemies = game.activeEnemies.length > 0;
             const frameIndex = (Math.floor(Date.now() / 200) % 2);
 
             game.heroes.forEach(hero => {
-                if (hero.isExploring) return; // Fuera del scroll principal
+                if (hero.isExploring) return;
 
                 let animKey = `${hero.baseSprite}_${frameIndex}`;
-                
-                // Si el héroe es el customizado pintado
                 let isCustom = (hero.sprite === 'custom');
-
-                // Renderizar
                 let hX = hero.x * (w / 100);
                 let bobY = (hero.state === 'walk') ? Math.sin(Date.now() * 0.015) * 1.5 : 0;
 
@@ -2031,13 +2357,13 @@
                     drawSpriteKeyOnCanvas(ctx, animKey, hX, groundY + bobY, currentScale, false);
                 }
 
-                // Renderizar barra de vida pequeña encima
+                // Vida
                 ctx.fillStyle = 'rgba(0,0,0,0.5)';
                 ctx.fillRect(hX, groundY - 6, 16 * currentScale, 3);
                 ctx.fillStyle = '#ef4444';
                 ctx.fillRect(hX, groundY - 6, (16 * currentScale) * (hero.hp / hero.maxHp), 3);
 
-                // Renderizar escudo de fe milagroso si está activo
+                // Escudo
                 if (game.isShieldActive) {
                     ctx.strokeStyle = '#06b6d4';
                     ctx.lineWidth = 2;
@@ -2047,7 +2373,7 @@
                 }
             });
 
-            // 3. Animaciones de Enemigos
+            // Enemigos
             game.activeEnemies.forEach(enemy => {
                 let animKey = `${enemy.sprite}_${frameIndex}`;
                 let eX = enemy.x * (w / 100);
@@ -2055,14 +2381,14 @@
 
                 drawSpriteKeyOnCanvas(ctx, animKey, eX, groundY + bobY, currentScale, true);
 
-                // Barra de vida
+                // Vida
                 ctx.fillStyle = 'rgba(0,0,0,0.5)';
                 ctx.fillRect(eX, groundY - 6, 16 * currentScale, 3);
-                ctx.fillStyle = '#a855f7'; // morado bárbaro
+                ctx.fillStyle = '#a855f7'; 
                 ctx.fillRect(eX, groundY - 6, (16 * currentScale) * (enemy.hp / enemy.maxHp), 3);
             });
 
-            // 4. Bucle de Partículas
+            // Partículas
             particles.forEach((p, idx) => {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -2072,11 +2398,10 @@
                     return;
                 }
                 ctx.fillStyle = p.color;
-                const pSize = (game.viewMode === 'fullscreen') ? 3 : 1.5;
-                ctx.fillRect(p.x, p.y, pSize, pSize);
+                ctx.fillRect(p.x, p.y, 3, 3);
             });
 
-            // 5. Dibujar Daño flotante
+            // Daño flotante
             activeFloatingTexts.forEach((ft, idx) => {
                 ctx.fillStyle = ft.color;
                 ctx.font = (game.viewMode === 'fullscreen') ? "bold 10px 'Press Start 2P'" : "7px 'Press Start 2P'";
@@ -2092,13 +2417,12 @@
                 }
             });
 
-            // 6. Si hay corte anime (Anime Cut-In) Crusaders Quest
+            // Corte anime
             if (game.cutinTimer > 0) {
                 renderAnimeCutin(ctx, w, h);
             }
         }
 
-        // --- COMPILADOR DE DIBUJO DE SPRITES DIRECTO EN CANVAS ---
         function drawSpriteKeyOnCanvas(ctx, spriteKey, x, y, scale, flipX) {
             const grid = PIXEL_SPRITES[spriteKey] || PIXEL_SPRITES['korg_0'];
             const rLen = grid.length;
@@ -2129,7 +2453,6 @@
             }
         }
 
-        // Textos flotantes retro
         let activeFloatingTexts = [];
         function createFloatingText(text, xPct, color) {
             const activeCanvas = (game.viewMode === 'fullscreen') ? bCanvas : tbCanvas;
@@ -2143,7 +2466,7 @@
         }
 
 
-        // --- VISTA ISOMÉTRICA EN CANVAS DEL PUEBLO (TOWN VIEW) ---
+        // --- VISTA CENTRAL TOWER (MICROCIVILIZATION TOWER DRAW) ---
         const townCanvas = document.getElementById('town-canvas');
         const tCtx = townCanvas.getContext('2d');
 
@@ -2158,159 +2481,727 @@
             const h = townCanvas.height;
             tCtx.clearRect(0,0,w,h);
 
-            // Shaking de prestigio
+            // Shaking
             let shakeX = 0, shakeY = 0;
-            if (game.prestigeAnimation) {
-                shakeX = (Math.random() - 0.5) * 8;
-                shakeY = (Math.random() - 0.5) * 8;
+            if (game.prestigeAnimation || game.disasters.fire.active) {
+                shakeX = (Math.random() - 0.5) * 6;
+                shakeY = (Math.random() - 0.5) * 6;
             }
 
-            const tileW = 48;
-            const tileH = 24;
-            const centerOffsetX = w / 2 + shakeX;
-            const topOffsetY = h / 2 - 30 + shakeY;
+            const towerX = w / 2 + shakeX;
+            const groundY = h - 12 + shakeY;
 
-            // Renderizar rejilla isométrica 5x5
-            for (let r = 0; r < 5; r++) {
-                for (let c = 0; c < 5; c++) {
-                    const isoX = (r - c) * (tileW / 2) + centerOffsetX;
-                    const isoY = (r + c) * (tileH / 2) + topOffsetY;
+            const conf = game.eraConfigs[game.era];
 
-                    // Dibujar diamante de pasto
-                    tCtx.fillStyle = '#14532d'; // pasto base
+            // 1. DIBUJAR CIELO GRADIENTE
+            const skyGrad = tCtx.createLinearGradient(0, 0, 0, h);
+            skyGrad.addColorStop(0, conf.bg);
+            skyGrad.addColorStop(0.7, '#0f172a');
+            skyGrad.addColorStop(1, '#1e293b');
+            tCtx.fillStyle = skyGrad;
+            tCtx.fillRect(0, 0, w, h);
+
+            // 2. ESTRELLAS QUE PARPADEAN
+            tCtx.fillStyle = '#ffffff';
+            for (let i = 0; i < 15; i++) {
+                let sx = (i * 97 + 13) % w;
+                let sy = (i * 43 + 7) % (h - 70);
+                let size = (Math.sin(Date.now() * 0.003 + i) > 0.4) ? 1.5 : 0.7;
+                tCtx.fillRect(sx, sy, size, size);
+            }
+
+            // 3. NUBES DRIFTING
+            if (!game.clouds || game.clouds.length === 0) {
+                initClouds();
+            }
+            tCtx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+            game.clouds.forEach(cloud => {
+                cloud.x += cloud.speed;
+                if (cloud.x > w + 20) {
+                    cloud.x = -cloud.width - 10;
+                    cloud.y = 15 + Math.random() * 45;
+                }
+                tCtx.fillRect(cloud.x, cloud.y, cloud.width, cloud.height);
+                tCtx.fillRect(cloud.x + 4, cloud.y - 2, cloud.width - 8, 2);
+                tCtx.fillRect(cloud.x + 8, cloud.y + cloud.height, cloud.width - 16, 1);
+            });
+
+            // 4. MONTAÑAS DE FONDO PIXELADAS
+            tCtx.fillStyle = 'rgba(15, 23, 42, 0.5)';
+            for (let i = 0; i < w / 120 + 2; i++) {
+                const mx = i * 120 - 20;
+                tCtx.beginPath();
+                tCtx.moveTo(mx, groundY);
+                tCtx.lineTo(mx + 60, groundY - 35);
+                tCtx.lineTo(mx + 120, groundY);
+                tCtx.fill();
+            }
+
+            // 5. TERRENO BASE
+            tCtx.fillStyle = '#1b2a47'; // roca base
+            tCtx.fillRect(0, groundY, w, 15);
+            tCtx.fillStyle = '#2e4c7e';
+            tCtx.fillRect(0, groundY, w, 2);
+
+            // 6. GRANJA (LEFT SIDE)
+            // Suelo de labranza
+            tCtx.fillStyle = '#3f200f';
+            tCtx.fillRect(10, groundY - 6, 60, 6);
+            tCtx.fillStyle = '#166534'; // cultivos
+            for (let cx = 12; cx < 65; cx += 6) {
+                let cropH = 2 + Math.floor(Math.sin(Date.now() * 0.001 + cx) * 1);
+                tCtx.fillRect(cx, groundY - 6 - cropH, 3, cropH);
+                tCtx.fillStyle = '#eab308'; // trigo
+                tCtx.fillRect(cx + 1, groundY - 7 - cropH, 1, 1);
+                tCtx.fillStyle = '#166534';
+            }
+            // Molino de viento que rota
+            let angle = Date.now() * 0.0018;
+            const hubX = 35;
+            const hubY = groundY - 18;
+            // Estructura molino
+            tCtx.fillStyle = '#78350f';
+            tCtx.fillRect(hubX - 4, hubY, 8, 18);
+            tCtx.fillStyle = '#451a03';
+            tCtx.fillRect(hubX - 2, hubY - 3, 4, 3);
+            // Aspas giratorias
+            tCtx.strokeStyle = '#e2e8f0';
+            tCtx.lineWidth = 1.5;
+            for (let i = 0; i < 4; i++) {
+                let a = angle + (i * Math.PI / 2);
+                tCtx.beginPath();
+                tCtx.moveTo(hubX, hubY);
+                tCtx.lineTo(hubX + Math.cos(a) * 8, hubY + Math.sin(a) * 8);
+                tCtx.stroke();
+            }
+
+            // 7. BOSQUE & LEÑADORES (RIGHT SIDE)
+            tCtx.fillStyle = '#064e3b'; // Copa arboles lejanos
+            tCtx.fillRect(w - 75, groundY - 14, 12, 14);
+            tCtx.fillStyle = '#166534';
+            tCtx.fillRect(w - 55, groundY - 20, 15, 20);
+            tCtx.fillRect(w - 30, groundY - 24, 18, 24);
+            tCtx.fillStyle = '#78350f'; // Troncos
+            tCtx.fillRect(w - 49, groundY - 6, 3, 6);
+            tCtx.fillRect(w - 22, groundY - 6, 3, 6);
+
+            // Cabaña del leñador
+            tCtx.fillStyle = '#451a03';
+            tCtx.fillRect(w - 60, groundY - 10, 14, 10); // pared
+            tCtx.fillStyle = '#78350f'; // tejado
+            tCtx.beginPath();
+            tCtx.moveTo(w - 62, groundY - 10);
+            tCtx.lineTo(w - 53, groundY - 14);
+            tCtx.lineTo(w - 44, groundY - 10);
+            tCtx.fill();
+            tCtx.fillStyle = '#111827'; // puerta
+            tCtx.fillRect(w - 57, groundY - 6, 4, 6);
+            // Chimenea humeante
+            tCtx.fillStyle = '#374151';
+            tCtx.fillRect(w - 48, groundY - 13, 2, 4);
+            if (Math.random() < 0.08) {
+                spawnTownParticle(w - 47, groundY - 14, '#94a3b8', (Math.random()-0.5)*0.3, -0.6, 20);
+            }
+
+            // 8. MINA / RAILROAD (ENTRE TORRE Y LEÑADORES)
+            const mineX = w - 85;
+            // Entrada de mina
+            tCtx.fillStyle = '#111827'; // interior oscuro
+            tCtx.fillRect(mineX - 8, groundY - 12, 10, 12);
+            tCtx.strokeStyle = '#78350f'; // vigas de soporte de madera
+            tCtx.lineWidth = 1.5;
+            tCtx.strokeRect(mineX - 8, groundY - 12, 10, 12);
+            // Rieles
+            tCtx.fillStyle = '#4b5563';
+            tCtx.fillRect(mineX - 15, groundY - 2, 25, 2);
+            // Carrito moviéndose
+            let cartX = mineX - 14 + Math.sin(Date.now() * 0.001) * 11;
+            tCtx.fillStyle = '#374151';
+            tCtx.fillRect(cartX, groundY - 6, 7, 4); // carrito
+            tCtx.fillStyle = '#111827'; // ruedas
+            tCtx.fillRect(cartX + 1, groundY - 2, 1, 1);
+            tCtx.fillRect(cartX + 5, groundY - 2, 1, 1);
+            tCtx.fillStyle = '#9ca3af'; // piedras cargadas
+            tCtx.fillRect(cartX + 2, groundY - 8, 4, 2);
+
+            // 9. ESTRUCTURA DE LA TORRE DE BABEL (Microcivilization Style)
+            const floorH = 28;
+            const towerW = 70;
+            const levels = game.era + 1;
+
+            // Dibujar cuerdas de invasión si hay crisis
+            if (game.crisisActive) {
+                tCtx.strokeStyle = '#374151';
+                tCtx.lineWidth = 1;
+                // Rueda izquierda
+                tCtx.beginPath();
+                tCtx.moveTo(towerX - towerW/2 - 6, groundY);
+                tCtx.lineTo(towerX - towerW/2 - 6, groundY - (levels * floorH));
+                // Rueda derecha
+                tCtx.moveTo(towerX + towerW/2 + 6, groundY);
+                tCtx.lineTo(towerX + towerW/2 + 6, groundY - (levels * floorH));
+                tCtx.stroke();
+            }
+
+            for (let f = 0; f < 4; f++) {
+                let fy = groundY - (f * floorH);
+                let unlocked = f < levels;
+
+                if (!unlocked) {
+                    // ANDAMIO DE CONSTRUCCIÓN (Nivel Bloqueado)
+                    tCtx.strokeStyle = 'rgba(120, 53, 4, 0.4)';
+                    tCtx.lineWidth = 2;
+                    // Vigas en X diagonal
                     tCtx.beginPath();
-                    tCtx.moveTo(isoX, isoY);
-                    tCtx.lineTo(isoX + tileW/2, isoY + tileH/2);
-                    tCtx.lineTo(isoX, isoY + tileH);
-                    tCtx.lineTo(isoX - tileW/2, isoY + tileH/2);
-                    tCtx.fill();
-
-                    // Borde diamante
-                    tCtx.strokeStyle = 'rgba(255,255,255,0.05)';
-                    tCtx.lineWidth = 1;
+                    tCtx.moveTo(towerX - towerW/2, fy);
+                    tCtx.lineTo(towerX + towerW/2, fy - floorH);
+                    tCtx.moveTo(towerX + towerW/2, fy);
+                    tCtx.lineTo(towerX - towerW/2, fy - floorH);
                     tCtx.stroke();
+                    // Columnas de soporte vertical
+                    tCtx.strokeStyle = 'rgba(120, 53, 4, 0.5)';
+                    tCtx.beginPath();
+                    tCtx.moveTo(towerX - towerW/2 + 12, fy);
+                    tCtx.lineTo(towerX - towerW/2 + 12, fy - floorH);
+                    tCtx.moveTo(towerX + towerW/2 - 12, fy);
+                    tCtx.lineTo(towerX + towerW/2 - 12, fy - floorH);
+                    tCtx.stroke();
+                    // Cuerdas y poleas colgando
+                    tCtx.strokeStyle = '#4b5563';
+                    tCtx.lineWidth = 0.8;
+                    tCtx.beginPath();
+                    tCtx.moveTo(towerX - 10, fy - floorH);
+                    tCtx.lineTo(towerX - 10, fy - 14);
+                    tCtx.stroke();
+                    tCtx.fillStyle = '#78350f'; // plataforma suspendida
+                    tCtx.fillRect(towerX - 14, fy - 14, 8, 2);
+                    // Cajas y sacos de material en el andamio
+                    tCtx.fillStyle = '#854d0e';
+                    tCtx.fillRect(towerX - 25, fy - 5, 5, 5);
+                    tCtx.fillStyle = '#b45309';
+                    tCtx.fillRect(towerX + 15, fy - 4, 6, 4);
+                } else {
+                    // NIVEL DESBLOQUEADO (Estilo de la Era Actual)
+                    let wallBg = '#1f2937';
+                    let strokeCol = '#4b5563';
+                    let balconyCol = '#6b7280';
+                    let doorCol = '#451a03';
 
-                    // Asignación de edificios a casillas fijas
-                    if (r === 2 && c === 2) {
-                        drawBabelTowerBuilding(tCtx, isoX, isoY);
-                    } else if (r === 1 && c === 1 && game.workers.food > 0) {
-                        drawFarmBuilding(tCtx, isoX, isoY);
-                    } else if (r === 3 && c === 1 && game.workers.wood > 0) {
-                        drawWoodcutterBuilding(tCtx, isoX, isoY);
-                    } else if (r === 1 && c === 3 && game.workers.stone > 0) {
-                        drawQuarryBuilding(tCtx, isoX, isoY);
-                    } else if (r === 3 && c === 3 && game.workers.science > 0) {
-                        drawAcademyBuilding(tCtx, isoX, isoY);
-                    } else if (r === 2 && c === 1 && game.faith > 10) {
-                        drawTempleBuilding(tCtx, isoX, isoY);
-                    } else if (r === 4 && c === 2) {
-                        drawHarborBuilding(tCtx, isoX, isoY);
+                    if (game.era === 0) { // Nómadas
+                        wallBg = '#382215'; 
+                        strokeCol = '#5c3a21';
+                        balconyCol = '#78350f';
+                        doorCol = '#1f130b';
+                    } else if (game.era === 1) { // Piedra
+                        wallBg = '#78350f'; 
+                        strokeCol = '#451a03';
+                        balconyCol = '#a16207';
+                    } else if (game.era === 2) { // Bronce
+                        wallBg = '#451a03'; 
+                        strokeCol = '#ca8a04';
+                        balconyCol = '#d97706';
+                    } else if (game.era === 3) { // Hierro
+                        wallBg = '#1f2937'; 
+                        strokeCol = '#4b5563';
+                        balconyCol = '#374151';
+                    }
+
+                    // Fondo principal de la pared
+                    tCtx.fillStyle = wallBg;
+                    tCtx.fillRect(towerX - towerW/2, fy - floorH, towerW, floorH);
+                    tCtx.strokeStyle = strokeCol;
+                    tCtx.lineWidth = 2.5;
+                    tCtx.strokeRect(towerX - towerW/2, fy - floorH, towerW, floorH);
+
+                    // Textura de pared
+                    tCtx.strokeStyle = 'rgba(0,0,0,0.15)';
+                    tCtx.lineWidth = 1.5;
+                    if (game.era === 0) { 
+                        for (let lx = -25; lx < 30; lx += 15) {
+                            tCtx.beginPath();
+                            tCtx.moveTo(towerX + lx, fy - floorH);
+                            tCtx.lineTo(towerX + lx + 10, fy);
+                            tCtx.stroke();
+                        }
+                    } else { 
+                        for (let ly = 6; ly < floorH; ly += 7) {
+                            tCtx.beginPath();
+                            tCtx.moveTo(towerX - towerW/2, fy - floorH + ly);
+                            tCtx.lineTo(towerX + towerW/2, fy - floorH + ly);
+                            tCtx.stroke();
+                        }
+                    }
+
+                    // Puerta en el piso 0
+                    if (f === 0) {
+                        tCtx.fillStyle = doorCol;
+                        tCtx.fillRect(towerX - 6, fy - 12, 12, 12);
+                        tCtx.strokeStyle = '#1e293b';
+                        tCtx.lineWidth = 1;
+                        tCtx.strokeRect(towerX - 6, fy - 12, 12, 12);
+                        if (game.era >= 2) {
+                            tCtx.fillStyle = '#facc15';
+                            tCtx.fillRect(towerX - 7, fy - 14, 14, 2);
+                        }
+                    }
+
+                    // Ventanas con luces calientes
+                    if (f > 0) {
+                        tCtx.fillStyle = 'rgba(10, 15, 30, 0.8)';
+                        const winY = fy - floorH + 8;
+                        tCtx.fillRect(towerX - 16, winY, 8, 12);
+                        tCtx.fillRect(towerX + 8, winY, 8, 12);
+
+                        let winFlicker = (Math.sin(Date.now() * 0.005 + f) > 0) ? '#ca8a04' : '#facc15';
+                        tCtx.fillStyle = winFlicker;
+                        tCtx.fillRect(towerX - 14, winY + 2, 4, 8);
+                        tCtx.fillRect(towerX + 10, winY + 2, 4, 8);
+
+                        // Sombras de ciudadanos dentro
+                        if (Math.random() < 0.4) {
+                            tCtx.fillStyle = 'rgba(0,0,0,0.6)';
+                            let shadowX = (Math.random() < 0.5) ? towerX - 13 : towerX + 11;
+                            tCtx.fillRect(shadowX, winY + 4, 2, 6);
+                        }
+                    }
+
+                    // Barandillas de balcones laterales
+                    tCtx.fillStyle = balconyCol;
+                    tCtx.fillRect(towerX - towerW/2 - 4, fy - floorH + 14, 4, 3);
+                    tCtx.fillRect(towerX + towerW/2, fy - floorH + 14, 4, 3);
+                    tCtx.fillRect(towerX - towerW/2 - 4, fy - 3, 4, 3);
+                    tCtx.fillRect(towerX + towerW/2, fy - 3, 4, 3);
+
+                    tCtx.fillStyle = strokeCol;
+                    tCtx.fillRect(towerX - towerW/2 - 4, fy - floorH, 1, floorH);
+                    tCtx.fillRect(towerX + towerW/2 + 3, fy - floorH, 1, floorH);
+
+                    // Banderas flameantes (Senda adaptativa)
+                    let flagColor = '#3b82f6';
+                    if (game.senda === 'espada') flagColor = '#ef4444';
+                    else if (game.senda === 'mente') flagColor = '#06b6d4';
+
+                    let flagWave = Math.floor(Math.sin(Date.now() * 0.01 + f) * 1.5);
+                    tCtx.fillStyle = flagColor;
+                    tCtx.fillRect(towerX - towerW/2 - 9 + flagWave, fy - floorH + 2, 5, 4);
+                    tCtx.fillStyle = '#d1d5db';
+                    tCtx.fillRect(towerX - towerW/2 - 10, fy - floorH + 1, 1, 10); 
+
+                    // Chimenea humeante en la Era del Hierro
+                    if (f === levels - 1 && game.era >= 3) {
+                        tCtx.fillStyle = '#4b5563';
+                        tCtx.fillRect(towerX + 18, fy - floorH - 10, 4, 10);
+                        if (Math.random() < 0.08) {
+                            spawnTownParticle(towerX + 20, fy - floorH - 11, '#6b7280', (Math.random()-0.5)*0.2, -0.6, 25);
+                        }
+                    }
+                }
+
+                // Escaleras de interconexión rústicas
+                tCtx.fillStyle = '#854d0e';
+                tCtx.fillRect(towerX - 24, fy - floorH, 4, floorH);
+                tCtx.fillRect(towerX + 20, fy - floorH, 4, floorH);
+                tCtx.fillStyle = '#ca8a04'; 
+                for (let r = 2; r < floorH; r += 5) {
+                    tCtx.fillRect(towerX - 25, fy - floorH + r, 6, 1.5);
+                    tCtx.fillRect(towerX + 19, fy - floorH + r, 6, 1.5);
+                }
+
+                // Decoración de Monumento de Cima (Según Era)
+                if (f === levels - 1) {
+                    if (game.era === 0) { // Tienda tribal & Hoguera
+                        tCtx.fillStyle = '#92400e';
+                        tCtx.beginPath();
+                        tCtx.moveTo(towerX - 8, fy - floorH);
+                        tCtx.lineTo(towerX, fy - floorH - 12);
+                        tCtx.lineTo(towerX + 8, fy - floorH);
+                        tCtx.fill();
+                        tCtx.fillStyle = '#ef4444'; 
+                        tCtx.fillRect(towerX - 2, fy - floorH - 4, 4, 4);
+                        // Hoguera
+                        tCtx.fillStyle = '#f97316';
+                        tCtx.fillRect(towerX - 12, fy - floorH - 3, 3, 3);
+                        tCtx.fillStyle = '#facc15';
+                        tCtx.fillRect(towerX - 11, fy - floorH - 5, 1, 2);
+                    } else if (game.era === 1) { // Cabaña de Adobe con Totem
+                        tCtx.fillStyle = '#a16207';
+                        tCtx.fillRect(towerX - 14, fy - floorH - 12, 28, 12);
+                        tCtx.fillStyle = '#451a03'; 
+                        tCtx.beginPath();
+                        tCtx.moveTo(towerX - 16, fy - floorH - 12);
+                        tCtx.lineTo(towerX, fy - floorH - 19);
+                        tCtx.lineTo(towerX + 16, fy - floorH - 12);
+                        tCtx.fill();
+                        tCtx.fillStyle = '#ca8a04';
+                        tCtx.fillRect(towerX - 20, fy - floorH - 16, 3, 16);
+                        tCtx.fillStyle = '#ef4444';
+                        tCtx.fillRect(towerX - 22, fy - floorH - 14, 7, 2); 
+                    } else if (game.era === 2) { // Templo solar con Cúpula
+                        tCtx.fillStyle = '#e2e8f0'; 
+                        tCtx.fillRect(towerX - 16, fy - floorH - 10, 32, 10);
+                        tCtx.fillStyle = '#94a3b8';
+                        tCtx.fillRect(towerX - 14, fy - floorH - 10, 3, 10);
+                        tCtx.fillRect(towerX - 6, fy - floorH - 10, 3, 10);
+                        tCtx.fillRect(towerX + 3, fy - floorH - 10, 3, 10);
+                        tCtx.fillRect(towerX + 11, fy - floorH - 10, 3, 10);
+                        tCtx.fillStyle = '#facc15';
+                        tCtx.beginPath();
+                        tCtx.arc(towerX, fy - floorH - 10, 10, Math.PI, 0);
+                        tCtx.fill();
+                    } else { // Torreón del Castillo con Bandera Real
+                        tCtx.fillStyle = '#4b5563'; 
+                        tCtx.fillRect(towerX - 18, fy - floorH - 16, 36, 16);
+                        tCtx.fillStyle = '#374151';
+                        tCtx.fillRect(towerX - 18, fy - floorH - 20, 6, 4);
+                        tCtx.fillRect(towerX - 6, fy - floorH - 20, 6, 4);
+                        tCtx.fillRect(towerX + 6, fy - floorH - 20, 6, 4);
+                        tCtx.fillRect(towerX + 12, fy - floorH - 20, 6, 4);
+                        tCtx.fillStyle = '#1e293b';
+                        tCtx.fillRect(towerX - 1, fy - floorH - 32, 2, 16);
+                        let mainFlagColor = (game.senda === 'espada') ? '#ef4444' : (game.senda === 'mente' ? '#06b6d4' : '#3b82f6');
+                        let mainFlagWave = Math.floor(Math.sin(Date.now() * 0.015) * 2.5);
+                        tCtx.fillStyle = mainFlagColor;
+                        tCtx.fillRect(towerX + 1 + mainFlagWave, fy - floorH - 32, 12, 8);
+                        tCtx.fillStyle = '#fff';
+                        tCtx.fillRect(towerX + 3 + mainFlagWave, fy - floorH - 29, 8, 2);
                     }
                 }
             }
 
-            // Animación de prestigio desmoronándose
-            if (game.prestigeAnimation) {
-                tCtx.fillStyle = 'rgba(239, 68, 68, 0.2)';
-                tCtx.fillRect(0,0,w,h);
-                // Esparcir chispas del derrumbe
-                for(let i=0; i<3; i++) {
-                    spawnParticle(w/2 + (Math.random()-0.5)*120, h/2 + (Math.random()-0.5)*80, '#ef4444', (Math.random()-0.5)*4, -2 - Math.random()*3);
-                }
-            }
-        }
-
-        // Pintores isométricos de edificios
-        function drawBabelTowerBuilding(ctx, x, y) {
-            // El nivel de la torre crece con la era
-            const levels = game.era + 1;
-            ctx.fillStyle = '#6b7280'; // piedra gris
-            
-            for (let i = 0; i < levels; i++) {
-                const by = y - (i * 14);
-                // Base rect isométrica simulación
-                ctx.fillRect(x - 12, by - 12, 24, 16);
-                ctx.fillStyle = '#4b5563';
-                ctx.fillRect(x - 8, by - 10, 16, 12);
+            // Helper para pintar los micro-sprites de ciudadanos
+            function drawMicroSprite(ctx, x, y, type, state, step, outfitColor, hairColor, skinColor, carryType) {
+                ctx.save();
+                const walkFrame = Math.floor(step) % 2;
                 
-                // Decoración dorada en eras altas
-                if (game.era >= 2) {
-                    ctx.fillStyle = '#facc15';
-                    ctx.fillRect(x - 2, by - 12, 4, 3);
+                if (type === 'citizen') {
+                    // Head
+                    ctx.fillStyle = skinColor;
+                    ctx.fillRect(x + 1, y - 8, 2, 2);
+                    // Hair
+                    ctx.fillStyle = hairColor;
+                    ctx.fillRect(x + 1, y - 9, 2, 1);
+                    ctx.fillRect(x, y - 8, 1, 2);
+                    // Torso (Outfit)
+                    ctx.fillStyle = outfitColor;
+                    ctx.fillRect(x, y - 6, 4, 4);
+                    // Legs
+                    ctx.fillStyle = '#111827';
+                    if (state === 'climbing') {
+                        ctx.fillRect(x, y - 2, 1, 2);
+                        ctx.fillRect(x + 3, y - 2, 1, 2);
+                        ctx.fillStyle = outfitColor;
+                        ctx.fillRect(x - 1, y - 6, 1, 2);
+                        ctx.fillRect(x + 4, y - 6, 1, 2);
+                    } else {
+                        if (walkFrame === 0) {
+                            ctx.fillRect(x, y - 2, 1, 2);
+                            ctx.fillRect(x + 3, y - 2, 1, 2);
+                        } else {
+                            ctx.fillRect(x + 1, y - 2, 1, 2);
+                            ctx.fillRect(x + 2, y - 2, 1, 2);
+                        }
+                    }
+                    // Carry Item
+                    if (carryType) {
+                        if (carryType === 'food') ctx.fillStyle = '#eab308'; 
+                        else if (carryType === 'wood') ctx.fillStyle = '#854d0e'; 
+                        else ctx.fillStyle = '#9ca3af'; 
+                        ctx.fillRect(x - 2, y - 5, 2, 3);
+                    }
+                } else if (type === 'soldier') {
+                    ctx.fillStyle = '#9ca3af';
+                    ctx.fillRect(x, y - 9, 4, 3);
+                    ctx.fillStyle = '#111827';
+                    ctx.fillRect(x, y - 7, 4, 1);
+                    ctx.fillStyle = (game.senda === 'mente') ? '#06b6d4' : '#ef4444';
+                    ctx.fillRect(x + 1, y - 10, 2, 1);
+                    ctx.fillStyle = '#4b5563';
+                    ctx.fillRect(x, y - 6, 4, 4);
+                    ctx.fillStyle = '#d1d5db';
+                    ctx.fillRect(x + 4, y - 9, 1, 8);
+                    ctx.fillStyle = '#78350f';
+                    ctx.fillRect(x + 4, y - 4, 1, 3);
+                    ctx.fillStyle = '#111827';
+                    ctx.fillRect(x, y - 2, 1, 2);
+                    ctx.fillRect(x + 3, y - 2, 1, 2);
+                } else if (type === 'invader') {
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fillRect(x, y - 9, 4, 3);
+                    ctx.fillStyle = '#ffffff'; 
+                    ctx.fillRect(x - 1, y - 9, 1, 2);
+                    ctx.fillRect(x + 4, y - 9, 1, 2);
+                    ctx.fillStyle = '#991b1b';
+                    ctx.fillRect(x, y - 6, 4, 4);
+                    ctx.fillStyle = '#4b5563';
+                    ctx.fillRect(x + 4, y - 7, 2, 2);
+                    ctx.fillStyle = '#78350f';
+                    ctx.fillRect(x + 4, y - 5, 1, 4);
+                    ctx.fillStyle = '#111827';
+                    ctx.fillRect(x, y - 2, 1, 2);
+                    ctx.fillRect(x + 3, y - 2, 1, 2);
+                }
+                ctx.restore();
+            }
+
+            // 10. RENDERING CITIZENS (Microcivilization Style)
+            updateCitizensPhysics(w, h);
+            game.citizens.forEach(c => {
+                let state = c.state;
+                let carryType = c.carryType;
+                drawMicroSprite(tCtx, c.x, c.y, 'citizen', state, c.step, c.outfitColor, c.hairColor, c.skinColor, carryType);
+            });
+
+            // 11. INVASORES DE LA TORRE (Visual Invasion)
+            if (game.crisisActive && game.townInvaders) {
+                game.townInvaders.forEach(inv => {
+                    if (inv.state === 'climbing') {
+                        tCtx.fillStyle = '#111827';
+                        tCtx.fillRect(inv.x + 1, inv.y - 8, 2, 2); 
+                        tCtx.fillStyle = '#991b1b'; 
+                        tCtx.fillRect(inv.x, inv.y - 6, 4, 5); 
+                        tCtx.fillStyle = '#ffffff'; 
+                        tCtx.fillRect(inv.x - 1, inv.y - 5, 1, 1);
+                        tCtx.fillRect(inv.x + 4, inv.y - 5, 1, 1);
+                    } else {
+                        drawMicroSprite(tCtx, inv.x, inv.y, 'invader', 'fighting', inv.step);
+                    }
+                });
+            }
+
+            // 12. RENDER DE DESASTRES FÍSICOS (Microcivilization flickering flames/rats)
+            // FUEGO
+            if (game.disasters.fire.active) {
+                game.disasters.fire.nodes.forEach(fNode => {
+                    let flameH = 10 + Math.floor(Math.random() * 5);
+                    tCtx.fillStyle = '#f97316'; 
+                    tCtx.fillRect(fNode.x - 5, fNode.y - flameH, 10, flameH);
+                    tCtx.fillStyle = '#ef4444'; 
+                    tCtx.fillRect(fNode.x - 3, fNode.y - flameH - 3, 6, flameH);
+                    tCtx.fillStyle = '#facc15'; 
+                    tCtx.fillRect(fNode.x - 1, fNode.y - 4, 2, 4);
+
+                    if (Math.random() < 0.25) {
+                        spawnTownParticle(fNode.x + (Math.random()-0.5)*8, fNode.y - flameH, '#4b5563', (Math.random()-0.5)*0.5, -0.8, 25);
+                    }
+                });
+            }
+
+            // PESTE CLOUD & RATAS
+            if (game.disasters.disease.active) {
+                tCtx.fillStyle = 'rgba(34, 197, 94, 0.12)';
+                for (let f = 0; f < levels; f++) {
+                    let fy = groundY - (f * floorH);
+                    tCtx.fillRect(towerX - towerW/2 + 2, fy - floorH + 6, towerW - 4, floorH - 8);
+                    
+                    if (Math.random() < 0.05) {
+                        spawnTownParticle(towerX + (Math.random()-0.5)*60, fy - 14, 'rgba(34,197,94,0.4)', (Math.random()-0.5)*0.3, -0.3, 35);
+                    }
+                }
+                
+                if (!game.townRats) {
+                    game.townRats = [];
+                    for(let i=0; i<3; i++) {
+                        game.townRats.push({
+                            x: towerX + (Math.random()-0.5)*60,
+                            floor: Math.floor(Math.random() * levels),
+                            dir: (Math.random() < 0.5) ? -1 : 1
+                        });
+                    }
+                }
+                tCtx.fillStyle = '#374151'; 
+                game.townRats.forEach(rat => {
+                    let rY = groundY - (rat.floor * floorH) - 1;
+                    rat.x += rat.dir * 0.6;
+                    if (rat.x > towerX + towerW/2 - 4) { rat.dir = -1; }
+                    if (rat.x < towerX - towerW/2 + 4) { rat.dir = 1; }
+                    tCtx.fillRect(rat.x, rY - 2, 4, 2); 
+                    tCtx.fillStyle = '#ef4444'; 
+                    tCtx.fillRect(rat.dir === 1 ? rat.x + 3 : rat.x, rY - 2, 1, 1);
+                    tCtx.fillStyle = '#374151';
+                });
+            } else {
+                game.townRats = null;
+            }
+
+            // HUELGAS & REVUELTAS (Speech bubbles)
+            if (game.disasters.riot.active) {
+                game.citizens.forEach(c => {
+                    if (c.state === 'rioting') {
+                        if (Math.random() < 0.03) {
+                            spawnFloatingTownText(['✊', '☠️', '#@$!', '!'][Math.floor(Math.random()*4)], c.x, c.y - 15, '#ef4444');
+                        }
+                    }
+                });
+            }
+
+            // 13. ACTUALIZAR Y DIBUJAR PARTICULAS DEL PUEBLO (agua, chispas, monedas)
+            townParticles.forEach((p, idx) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                if (p.life <= 0) {
+                    townParticles.splice(idx, 1);
+                    return;
+                }
+                tCtx.fillStyle = p.color;
+                tCtx.fillRect(p.x, p.y, 2.5, 2.5);
+            });
+
+            // 14. TEXTOS FLOTANTES DEL PUEBLO
+            townFloatingTexts.forEach((ft, idx) => {
+                tCtx.fillStyle = ft.color;
+                tCtx.font = "bold 8px 'Press Start 2P'";
+                tCtx.shadowColor = '#000';
+                tCtx.shadowBlur = 2;
+                tCtx.textAlign = 'center';
+                tCtx.fillText(ft.text, ft.x, ft.y);
+                tCtx.shadowBlur = 0;
+                
+                ft.y -= 0.65;
+                ft.life--;
+                if (ft.life <= 0) {
+                    townFloatingTexts.splice(idx, 1);
+                }
+            });
+
+            // 15. EFECTO PRESTIGIO (DILUVIO)
+            if (game.prestigeAnimation) {
+                tCtx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+                tCtx.fillRect(0,0,w,h);
+                for(let i=0; i<3; i++) {
+                    spawnTownParticle(w/2 + (Math.random()-0.5)*120, h/2 + (Math.random()-0.5)*80, '#ef4444', (Math.random()-0.5)*4, -2 - Math.random()*3);
                 }
             }
-            // Aguja
-            const topY = y - (levels * 14);
-            ctx.fillStyle = '#ef4444';
-            ctx.fillRect(x - 1, topY - 18, 2, 8);
         }
 
-        function drawFarmBuilding(ctx, x, y) {
-            ctx.fillStyle = '#854d0e'; // tierra
-            ctx.fillRect(x - 10, y - 6, 20, 10);
-            ctx.fillStyle = '#22c55e'; // cosechas
-            ctx.fillRect(x - 8, y - 4, 4, 4);
-            ctx.fillRect(x + 2, y - 4, 5, 5);
-        }
+        // Clicks directos sobre el canvas del pueblo
+        function handleTownClick(event) {
+            const canvas = document.getElementById('town-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const clickY = event.clientY - rect.top;
 
-        function drawWoodcutterBuilding(ctx, x, y) {
-            ctx.fillStyle = '#78350f'; // madera cabin
-            ctx.fillRect(x - 8, y - 8, 16, 12);
-            ctx.fillStyle = '#ef4444'; // techo
-            ctx.beginPath();
-            ctx.moveTo(x - 10, y - 8);
-            ctx.lineTo(x, y - 14);
-            ctx.lineTo(x + 10, y - 8);
-            ctx.fill();
-        }
+            // 1. COMBATIR INVASORES DIRECTAMENTE CON CLICKS (Microcivilization style)
+            if (game.crisisActive && game.townInvaders && game.townInvaders.length > 0) {
+                let hitInvader = false;
+                game.townInvaders.forEach((inv, idx) => {
+                    const dist = Math.hypot(inv.x - clickX, inv.y - clickY);
+                    if (dist < 18) {
+                        inv.hp -= 10;
+                        hitInvader = true;
+                        playTone(500, 'sawtooth', 0.08, 0.06);
+                        
+                        for (let i = 0; i < 8; i++) {
+                            spawnTownParticle(inv.x, inv.y - 4, '#dc2626', (Math.random()-0.5)*3, -Math.random()*3);
+                        }
+                        
+                        if (inv.hp <= 0) {
+                            game.townInvaders.splice(idx, 1);
+                            spawnFloatingTownText("☠️ ELIMINADO", inv.x, inv.y - 8, '#ef4444');
+                            game.crisisProgress = Math.min(100, game.crisisProgress + 15);
+                            createFloatingText("+15% Progreso", 50, '#22c55e');
+                        }
+                    }
+                });
+                if (hitInvader) return; 
+            }
 
-        function drawQuarryBuilding(ctx, x, y) {
-            ctx.fillStyle = '#374151'; // cantera
-            ctx.fillRect(x - 10, y - 6, 20, 12);
-            ctx.fillStyle = '#111827'; // foso
-            ctx.fillRect(x - 5, y - 3, 10, 6);
-        }
+            // 2. APAGAR FUEGOS
+            if (game.disasters.fire.active) {
+                let hitFire = false;
+                game.disasters.fire.nodes.forEach((node, idx) => {
+                    const dist = Math.hypot(node.x - clickX, node.y - clickY);
+                    if (dist < 20) {
+                        game.disasters.fire.nodes.splice(idx, 1);
+                        hitFire = true;
+                        playTone(700, 'sine', 0.1, 0.05); 
+                        
+                        for (let i=0; i<12; i++) {
+                            spawnTownParticle(node.x, node.y, '#38bdf8', (Math.random()-0.5)*3, -Math.random()*4);
+                        }
+                    }
+                });
 
-        function drawAcademyBuilding(ctx, x, y) {
-            ctx.fillStyle = '#1e3a8a'; // azul
-            ctx.fillRect(x - 8, y - 10, 16, 14);
-            ctx.fillStyle = '#0284c7'; // cupula
-            ctx.beginPath();
-            ctx.arc(x, y - 10, 6, 0, Math.PI, true);
-            ctx.fill();
-        }
+                if (hitFire) {
+                    if (game.disasters.fire.nodes.length === 0) {
+                        resolveFireSuccess();
+                    }
+                    return;
+                }
+            }
 
-        function drawTempleBuilding(ctx, x, y) {
-            ctx.fillStyle = '#e2e8f0'; // marmol blanco
-            ctx.fillRect(x - 10, y - 10, 20, 12);
-            ctx.fillStyle = '#facc15'; // altar de fe
-            ctx.fillRect(x - 3, y - 14, 6, 4);
-        }
+            // 3. CURAR ENFERMOS (PLAGA)
+            if (game.disasters.disease.active) {
+                let hitSick = false;
+                game.citizens.forEach(c => {
+                    if (c.state === 'sick') {
+                        const dist = Math.hypot(c.x - clickX, c.y - clickY);
+                        if (dist < 18) {
+                            c.state = 'walking';
+                            hitSick = true;
+                            playTone(880, 'triangle', 0.15, 0.05);
+                            
+                            for (let i=0; i<10; i++) {
+                                spawnTownParticle(c.x, c.y - 6, '#4ade80', (Math.random()-0.5)*2.5, -Math.random()*3);
+                            }
+                        }
+                    }
+                });
+                
+                if (hitSick) {
+                    let sickLeft = game.citizens.filter(c => c.state === 'sick').length;
+                    if (sickLeft === 0) {
+                        resolveDiseaseSuccess();
+                    }
+                    return;
+                }
+            }
 
-        function drawHarborBuilding(ctx, x, y) {
-            ctx.fillStyle = '#78350f'; // madera del muelle
-            ctx.fillRect(x - 14, y - 4, 28, 6);
-            
-            // Si hay barco
-            if (game.harborState === 'docked') {
-                ctx.fillStyle = '#fff'; // vela
-                ctx.beginPath();
-                ctx.moveTo(x - 4, y - 6);
-                ctx.lineTo(x + 2, y - 14);
-                ctx.lineTo(x + 2, y - 6);
-                ctx.fill();
-                ctx.fillStyle = '#78350f'; // casco
-                ctx.fillRect(x - 6, y - 6, 12, 3);
+            // 4. SOBORNAR REBELDES
+            if (game.disasters.riot.active) {
+                let hitRiot = false;
+                game.citizens.forEach(c => {
+                    if (c.state === 'rioting') {
+                        const dist = Math.hypot(c.x - clickX, c.y - clickY);
+                        if (dist < 18) {
+                            hitRiot = true;
+                            if (game.gold >= 30) {
+                                game.gold -= 30;
+                                c.state = 'walking';
+                                playTone(600, 'sine', 0.1, 0.05, 900);
+                                
+                                for (let i=0; i<10; i++) {
+                                    spawnTownParticle(c.x, c.y - 6, '#facc15', (Math.random()-0.5)*2, -Math.random()*3.5);
+                                }
+                            } else {
+                                showToast("Falta Oro", "Necesitas 🪙30 para sobornar.");
+                            }
+                        }
+                    }
+                });
+
+                if (hitRiot) {
+                    let riotsLeft = game.citizens.filter(c => c.state === 'rioting').length;
+                    if (riotsLeft === 0) {
+                        resolveRiotSuccess();
+                    }
+                    return;
+                }
+            }
+
+            // 5. CLICKER NORMAL SOBRE LA TORRE (Cosechar población/recurso)
+            const towerCenter = canvas.width / 2;
+            if (clickX > towerCenter - 45 && clickX < towerCenter + 45) {
+                clickGather();
+                spawnTownParticle(clickX, clickY, '#ffedd5', (Math.random()-0.5)*4, -4.5);
             }
         }
 
 
         // --- ANIME CUT-IN CRUSADERS QUEST COMBO ---
         function triggerUltimateCombo() {
-            // Un combo triple (Sword+Mage+Archer) ha sido activado
-            game.cutinTimer = 40; // frames del cutin
+            game.cutinTimer = 40; 
             
-            // Temblor de pantalla
             const el = document.getElementById('civ-view-panel');
             el.classList.add('shake-screen');
             setTimeout(() => el.classList.remove('shake-screen'), 500);
@@ -2322,12 +3213,10 @@
             document.getElementById('combo-feedback').innerText = "¡EL JUICIO DE BABEL!";
             setTimeout(() => document.getElementById('combo-feedback').innerText = "", 2500);
 
-            // Eliminar a todos los enemigos de pantalla con gran daño
             setTimeout(() => {
                 if (game.activeEnemies.length > 0) {
                     game.activeEnemies.forEach(e => {
                         e.hp = Math.max(0, e.hp - 120);
-                        // Particulas
                         for (let p=0; p<15; p++) {
                             spawnParticle(e.x * (bCanvas.width/100), bCanvas.height - 40, '#facc15', (Math.random()-0.5)*10, -Math.random()*6);
                         }
@@ -2342,7 +3231,6 @@
         function renderAnimeCutin(ctx, w, h) {
             game.cutinTimer--;
             
-            // Dibujar fondo diagonal de velocidad
             ctx.fillStyle = 'rgba(239, 68, 68, 0.85)';
             ctx.beginPath();
             ctx.moveTo(0, h * 0.2);
@@ -2351,7 +3239,6 @@
             ctx.lineTo(0, h * 0.9);
             ctx.fill();
 
-            // Líneas de velocidad blancas
             ctx.strokeStyle = '#fff';
             ctx.lineWidth = 4;
             const seed = Date.now() % 50;
@@ -2362,7 +3249,6 @@
                 ctx.stroke();
             }
 
-            // Nombre del combo
             ctx.fillStyle = '#fff';
             ctx.font = "bold 13px 'Press Start 2P'";
             ctx.shadowColor = '#000';
@@ -2370,7 +3256,6 @@
             ctx.fillText("EL JUICIO DE BABEL", w/2 - 120, h/2);
             ctx.shadowBlur = 0;
 
-            // Retrato pixel gigante del Héroe
             const portraitScale = 4.5;
             drawSpriteKeyOnCanvas(ctx, 'valerio_0', w - 120, h/2 - 36, portraitScale, false);
         }
@@ -2422,7 +3307,6 @@
             });
         }
 
-        // Simulación Geolocalización Clima
         function setWeather(val) {
             if (val === 'sync') {
                 showToast("🛰️ Sincronizando Clima", "Leyendo satélite meteorológico de tu zona...");
@@ -2449,6 +3333,45 @@
         }
 
 
+        // --- EQUIPAR HÉROES EN SOCKETS (Microcivilization Sockets) ---
+        function equipHero(heroId, socketType) {
+            const hero = game.heroes.find(h => h.id === heroId);
+            if (!hero) return;
+
+            // Desequipar si estaba en otro lado
+            unequipHeroBySearch(heroId);
+
+            game.leaders[socketType] = hero;
+            document.getElementById(`socket-${socketType}-name`).innerText = hero.name.split(' ')[0];
+            document.getElementById(`socket-${socketType}`).style.borderColor = '#facc15';
+
+            showToast("👑 Líder Asignado", `${hero.name} ha tomado el cargo de ${socketType.toUpperCase()}.`);
+            playTone(880, 'sine', 0.2);
+            updateUI();
+        }
+
+        function unequipHero(socketType) {
+            const leader = game.leaders[socketType];
+            if (!leader) return;
+
+            game.leaders[socketType] = null;
+            document.getElementById(`socket-${socketType}-name`).innerText = "Vacío";
+            document.getElementById(`socket-${socketType}`).style.borderColor = 'var(--border-pixel)';
+
+            showToast("👑 Cargo Removido", `Se removió al líder de ${socketType.toUpperCase()}.`);
+            playTone(500, 'sine', 0.15);
+            updateUI();
+        }
+
+        function unequipHeroBySearch(heroId) {
+            for (let socket in game.leaders) {
+                if (game.leaders[socket] && game.leaders[socket].id === heroId) {
+                    unequipHero(socket);
+                }
+            }
+        }
+
+
         // --- SISTEMA GACHA DE HÉROES CON RARITY TIERS ---
         function triggerGachaRoll() {
             if (game.gold < 100) {
@@ -2460,7 +3383,6 @@
             game.gold -= 100;
             playTone(300, 'square', 0.1, 0.05, 900);
 
-            // Efecto de volteo de tarjeta
             const wrapper = document.getElementById('gacha-pack');
             wrapper.classList.remove('flipped');
             
@@ -2475,7 +3397,6 @@
                     { name: 'Legendary', chance: 0.03, class: 'rarity-legendary', mult: 2.2 }
                 ];
 
-                // Elegir rareza
                 const roll = Math.random();
                 let rarity = rarities[0];
                 let acc = 0;
@@ -2505,10 +3426,10 @@
                     state: 'walk',
                     activeBuff: chosenBuff,
                     isExploring: false,
-                    exploreTimer: 0
+                    exploreTimer: 0,
+                    rarity: rarity.name
                 };
 
-                // Actualizar tarjeta trasera
                 const resultCard = document.getElementById('gacha-card-result');
                 resultCard.className = `gacha-card-back ${rarity.class}`;
                 
@@ -2539,7 +3460,6 @@
         let isPainting = false;
 
         function initPainter() {
-            // Inicializar grid 16x16
             for (let r=0; r<16; r++) {
                 for(let c=0; c<16; c++) {
                     game.skinMatrix[r][c] = '.';
@@ -2583,7 +3503,6 @@
                         pCtx.fillRect(c * pxSize, r * pxSize, pxSize, pxSize);
                     }
                     
-                    // Rejilla guía tenue
                     pCtx.strokeStyle = 'rgba(255,255,255,0.03)';
                     pCtx.strokeRect(c * pxSize, r * pxSize, pxSize, pxSize);
                 }
@@ -2615,7 +3534,6 @@
         }
 
         function saveCustomSkin() {
-            // Añadir un nuevo héroe o actualizar el primero a Custom Skin
             let customHero = game.heroes.find(h => h.id === 'custom_painter_hero');
             
             if (!customHero) {
@@ -2645,7 +3563,7 @@
         }
 
 
-        // --- PESTAÑA: TECNOLOGÍAS (RESEARCH TREE) ---
+        // --- PESTAÑA: TECNOLOGÍAS ---
         function renderTechTree() {
             const container = document.getElementById('tech-tree-container');
             container.innerHTML = '';
@@ -2686,7 +3604,6 @@
             playTone(659, 'sine', 0.1);
             playTone(784, 'sine', 0.2);
 
-            // Re-aplicar bonuses
             updateUI();
             renderTechTree();
         }
@@ -2732,11 +3649,9 @@
 
             game.dungeonTimer--;
             
-            // Mover visualmente el carro
             const pct = ((30 - game.dungeonTimer) / 30) * 100;
             document.getElementById('dungeon-cart').style.left = `${pct}%`;
 
-            // Hitos en 33%, 66%, 100%
             if (pct >= 33 && game.dungeonNode === 0) {
                 game.dungeonNode = 1;
                 triggerMiniDungeonCombat("Wolf");
@@ -2744,7 +3659,6 @@
                 game.dungeonNode = 2;
                 triggerMiniDungeonCombat("Slime");
             } else if (pct >= 100) {
-                // Completado
                 game.dungeonActive = false;
                 const hero = game.heroes.find(h => h.id === game.dungeonHeroId);
                 hero.isExploring = false;
@@ -2798,7 +3712,7 @@
             }
 
             game.harborState = 'sailing';
-            game.harborTimer = 25; // 25s
+            game.harborTimer = 25; 
             showToast("⛵ Barco Mercante", "El barco zarpó del puerto.");
             playTone(400, 'triangle', 0.2);
             updateUI();
@@ -2840,7 +3754,7 @@
         }
 
 
-        // --- PUEBLO EN COMBATE Y CRISIS DE ASEDIO MULTI-ETAPA ---
+        // --- PUEBLO EN COMBATE Y CRISIS DE ASEDIO ---
         function spawnEnemy() {
             const types = [
                 { sprite: 'slime', hp: 30, dmg: 4 },
@@ -2848,17 +3762,15 @@
                 { sprite: 'orc', hp: 80, dmg: 10 }
             ];
 
-            const currentScale = (game.viewMode === 'fullscreen') ? 2.5 : 1.2;
             let enemyChoice = types[Math.floor(Math.random() * types.length)];
             
-            // Si hay crisis multietapa
             if (game.crisisActive) {
                 if (game.crisisStage === 1) {
-                    enemyChoice = { sprite: 'slime', hp: 40, dmg: 5 }; // goblin-scout
+                    enemyChoice = { sprite: 'slime', hp: 45, dmg: 5 }; 
                 } else if (game.crisisStage === 2) {
-                    enemyChoice = { sprite: 'orc', hp: 95, dmg: 12 }; // raider
+                    enemyChoice = { sprite: 'orc', hp: 95, dmg: 12 }; 
                 } else {
-                    enemyChoice = { sprite: 'wolf', hp: 250, dmg: 20 }; // Boss dragon head
+                    enemyChoice = { sprite: 'wolf', hp: 280, dmg: 22 }; 
                 }
             }
 
@@ -2873,7 +3785,6 @@
 
         function updateBattlePhysics() {
             let hasEnemies = game.activeEnemies.length > 0;
-            let time = Date.now();
 
             game.heroes.forEach(h => {
                 if (h.isExploring) return;
@@ -2888,13 +3799,12 @@
                     } else {
                         h.state = 'combat';
                         
-                        // Velocidad ataque
                         if (Math.random() < 0.15) {
-                            // Hit flash sparks
                             h.state = 'attacking';
                             
-                            // Multiplicadores pasivos
+                            // Buffs asignados por General
                             let dmgMult = 1.0;
+                            if (game.leaders.general) dmgMult += 0.50; // Socket general
                             if (game.senda === 'espada') dmgMult += 0.3;
                             if (game.techTree.metallurgy.researched) dmgMult += 0.3;
                             
@@ -2904,7 +3814,7 @@
                             nearest.hp = Math.max(0, nearest.hp - finalDmg);
                             createFloatingText(`-${finalDmg}`, nearest.x, '#fff');
 
-                            // Spawneo particulas de sangre/metal
+                            // Spawneo particulas
                             for(let i=0; i<4; i++) {
                                 spawnParticle(nearest.x * (bCanvas.width/100), bCanvas.height - 40, '#ef4444', (Math.random()-0.5)*4, -2 - Math.random()*2);
                             }
@@ -2922,7 +3832,6 @@
                         }
                     }
                 } else {
-                    // Volver a posición
                     if (h.x > 25) { h.x -= 0.4; h.state = 'walk'; }
                     else if (h.x < 15) { h.x += 0.4; h.state = 'walk'; }
                     else h.state = 'idle';
@@ -2940,7 +3849,6 @@
                     createFloatingText(`+🪙${loot}`, nearest.x, '#22c55e');
                     playTone(600, 'sine', 0.15, 0.05, 900);
 
-                    // Avanzar crisis
                     if (game.crisisActive) {
                         game.crisisStage++;
                         if (game.crisisStage > 3) {
@@ -2953,14 +3861,67 @@
 
                     game.activeEnemies.shift();
                     
-                    // Añadir bloque al azar
                     if (game.skillBlocks.length < 8) {
                         addSkillBlock();
                     }
                 }
             }
 
-            // Bucle render
+            // update town invaders if crisis active
+            if (game.crisisActive && game.townInvaders) {
+                const levels = game.era + 1;
+                const floorH = 28;
+                const groundY = (townCanvas.height || 300) - 12;
+                const towerCenter = (townCanvas.width || 400) / 2;
+                const towerWidth = 70;
+
+                // Spawn a new invader occasionally in the town canvas if they are fewer than 4
+                if (game.townInvaders.length < 4 && Math.random() < 0.05) {
+                    const targetFl = Math.floor(Math.random() * levels);
+                    game.townInvaders.push({
+                        x: (Math.random() < 0.5) ? towerCenter - towerWidth/2 - 6 : towerCenter + towerWidth/2 + 6,
+                        y: groundY,
+                        climbSpeed: 0.35 + Math.random() * 0.25,
+                        targetFloor: targetFl,
+                        state: 'climbing',
+                        hp: 25,
+                        step: Math.random() * 100
+                    });
+                }
+
+                // Update their physics
+                game.townInvaders.forEach((inv, idx) => {
+                    inv.step += 0.3;
+                    if (inv.state === 'climbing') {
+                        let targetY = groundY - (inv.targetFloor * floorH);
+                        inv.y -= inv.climbSpeed;
+                        if (inv.y <= targetY) {
+                            inv.y = targetY;
+                            inv.state = 'fighting';
+                            inv.targetX = towerCenter + (Math.random() - 0.5) * 35;
+                        }
+                    } else if (inv.state === 'fighting') {
+                        const dist = inv.targetX - inv.x;
+                        if (Math.abs(dist) > 2) {
+                            inv.x += Math.sign(dist) * 0.5;
+                        } else {
+                            if (Math.random() < 0.05) {
+                                inv.targetX = towerCenter + (Math.random() - 0.5) * 35;
+                            }
+                        }
+
+                        // Fight nearest citizen guard on same floor
+                        let guard = game.citizens.find(c => c.state === 'soldier' && c.floor === inv.targetFloor && Math.abs(c.x - inv.x) < 12);
+                        if (guard) {
+                            if (Math.random() < 0.15) {
+                                spawnTownParticle(inv.x + (Math.random() - 0.5) * 4, inv.y - 4, '#facc15', (Math.random() - 0.5) * 1.5, -Math.random() * 1.5);
+                                playTone(900, 'sawtooth', 0.03, 0.01);
+                            }
+                        }
+                    }
+                });
+            }
+
             renderBattlefield();
             renderTown();
             updateWeatherEffects();
@@ -2982,13 +3943,11 @@
                 if (game.faith < 20) { showToast("Fe Insuficiente", "Necesitas ✨20 de Fe Sacra."); return; }
                 game.faith -= 20;
                 
-                // Efecto visual rayo
                 playTone(1000, 'sawtooth', 0.4, 0.1, 200);
                 if (game.activeEnemies.length > 0) {
                     game.activeEnemies[0].hp = Math.max(0, game.activeEnemies[0].hp - 70);
                     createFloatingText("⚡ RAYO DIVINO -70", game.activeEnemies[0].x, '#facc15');
                     
-                    // Rayo particulas
                     const ex = game.activeEnemies[0].x * (bCanvas.width/100);
                     for(let i=0; i<30; i++) {
                         spawnParticle(ex, (bCanvas.height - 40)*(i/30), '#ffffff', (Math.random()-0.5)*2, 1);
@@ -3020,7 +3979,7 @@
 
             if (confirm("¿Deseas provocar el Colapso de la Torre? Reiniciarás eras a cambio de Fragmentos del Panteón.")) {
                 game.prestigeAnimation = true;
-                game.prestigeTimer = 40; // frames
+                game.prestigeTimer = 40; 
                 
                 playTone(80, 'sawtooth', 0.8, 0.15, 30);
                 
@@ -3030,7 +3989,7 @@
                     game.prestigeAnimation = false;
                     game.shards += earnedShards;
                     
-                    // Reseteo completo
+                    // Reseteo
                     game.era = 0;
                     game.population = 10;
                     game.food = 60;
@@ -3042,8 +4001,12 @@
                     game.activeEnemies = [];
                     game.workers = { food: 2, wood: 1, stone: 0, science: 0 };
                     
-                    showToast("🔥 La Torre ha Caído", `Obtuviste 💎${earnedShards} Fragmentos.`);
+                    // Limpiar líderes sockets
+                    game.leaders.general = null;
+                    game.leaders.inspector = null;
+                    game.leaders.priest = null;
                     
+                    showToast("🔥 La Torre ha Caído", `Obtuviste 💎${earnedShards} Fragmentos.`);
                     unlockAchievement('prestige_once');
                     
                     updateUI();
@@ -3053,12 +4016,15 @@
         }
 
         function buyRelic(type) {
-            const cost = (game.relics[type] + 1) * 3;
-            if (game.shards < cost) {
-                showToast("Fragmentos Insuficientes", `Necesitas 💎${cost} fragmentos.`);
+            let baseCost = (game.relics[type] + 1) * 3;
+            if (game.techTree.stellar_map.researched) {
+                baseCost = Math.max(1, baseCost - 1);
+            }
+            if (game.shards < baseCost) {
+                showToast("Fragmentos Insuficientes", `Necesitas 💎${baseCost} fragmentos.`);
                 return;
             }
-            game.shards -= cost;
+            game.shards -= baseCost;
             game.relics[type]++;
             playTone(880, 'sine', 0.2);
             showToast("Reliquia Elevada", `Subiste nivel de relic ${type}.`);
@@ -3068,18 +4034,19 @@
 
         function renderRelics() {
             const container = document.getElementById('relics-list');
+            let reduction = game.techTree.stellar_map.researched ? 1 : 0;
             container.innerHTML = `
                 <div style="display:flex; justify-content:space-between; font-size:11px;">
                     <span>🛡️ Espada Sagrada (+25% daño): Lvl ${game.relics.damage}</span>
-                    <button class="btn-action-small" onclick="buyRelic('damage')" style="font-size:6px;">Lvl Up (💎${(game.relics.damage+1)*3})</button>
+                    <button class="btn-action-small" onclick="buyRelic('damage')" style="font-size:6px;">Lvl Up (💎${Math.max(1, (game.relics.damage+1)*3 - reduction)})</button>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px;">
                     <span>🪙 Muro del Panteón (+50% oro): Lvl ${game.relics.gold}</span>
-                    <button class="btn-action-small" onclick="buyRelic('gold')" style="font-size:6px;">Lvl Up (💎${(game.relics.gold+1)*3})</button>
+                    <button class="btn-action-small" onclick="buyRelic('gold')" style="font-size:6px;">Lvl Up (💎${Math.max(1, (game.relics.gold+1)*3 - reduction)})</button>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px;">
                     <span>💡 Cúpula Astral (+25% ciencia): Lvl ${game.relics.science}</span>
-                    <button class="btn-action-small" onclick="buyRelic('science')" style="font-size:6px;">Lvl Up (💎${(game.relics.science+1)*3})</button>
+                    <button class="btn-action-small" onclick="buyRelic('science')" style="font-size:6px;">Lvl Up (💎${Math.max(1, (game.relics.science+1)*3 - reduction)})</button>
                 </div>
             `;
         }
@@ -3144,7 +4111,6 @@
             const block = game.skillBlocks[idx];
             game.skillBlocks.splice(idx, 1);
 
-            // Guardar combo
             const now = Date.now();
             if (now - game.lastComboTime > 1500) {
                 game.comboClicks = [];
@@ -3152,7 +4118,6 @@
             game.lastComboTime = now;
             game.comboClicks.push(block.type);
 
-            // Chequear si es combo triple Crusaders
             const hasW = game.comboClicks.includes('warrior');
             const hasM = game.comboClicks.includes('mage');
             const hasA = game.comboClicks.includes('archer');
@@ -3161,7 +4126,6 @@
                 triggerUltimateCombo();
                 game.comboClicks = [];
             } else {
-                // Efecto básico individual
                 if (block.type === 'warrior') {
                     if (game.activeEnemies.length > 0) {
                         game.activeEnemies[0].hp = Math.max(0, game.activeEnemies[0].hp - 25);
@@ -3196,9 +4160,7 @@
             playTone(880, 'sine', 0.1);
             playTone(1000, 'sine', 0.2);
 
-            // Escribir en cronicas
             writeChronicle(`Se otorgó la medalla divina de [${ach.title}] a la dinastía.`);
-            
             renderAchievements();
         }
 
@@ -3246,15 +4208,36 @@
         }
 
 
+        // --- MICROCIVILIZATION RISKS RESOLUTION ---
+        function resolveFireSuccess() {
+            game.disasters.fire.active = false;
+            game.risks.fire = 0;
+            showToast("✨ Fuego Extinguido", "El pueblo controló el incendio.");
+            updateUI();
+        }
+
+        function resolveDiseaseSuccess() {
+            game.disasters.disease.active = false;
+            game.risks.disease = 0;
+            showToast("✨ Peste Controlada", "La plaga ha sido desterrada.");
+            updateUI();
+        }
+
+        function resolveRiotSuccess() {
+            game.disasters.riot.active = false;
+            game.risks.riot = 0;
+            showToast("✨ Revuelta Paculada", "La paz retorna a los andamios.");
+            updateUI();
+        }
+
+
         // --- TICK INCREMENTAL PRINCIPAL (1 SEGUNDO) ---
         function gameTick() {
-            // Producción
             let foodProd = 0;
             let woodProd = 0;
             let stoneProd = 0;
             let scienceProd = 0;
 
-            // Multiplicadores pasivos
             let harvestMult = 1.0;
             let woodcutterMult = 1.0;
             let scienceMult = 1.0;
@@ -3266,9 +4249,13 @@
             // Reliquias prestigio
             const relicSci = 1 + (game.relics.science * 0.25);
 
+            // Reducción fatiga por Inspector asignado
+            let fatigueReduction = 1.0;
+            if (game.leaders.inspector) fatigueReduction -= 0.30; // Socket Inspector
+
             // Comida
             if (game.workers.food > 0 && !game.striking.food) {
-                game.fatigue.food = Math.min(100, game.fatigue.food + game.workers.food * 1.6);
+                game.fatigue.food = Math.min(100, game.fatigue.food + game.workers.food * 1.6 * fatigueReduction);
                 foodProd = game.workers.food * 0.25 * harvestMult;
                 if (game.fatigue.food >= 100) triggerStrike('food');
             } else if (game.striking.food) {
@@ -3280,7 +4267,7 @@
 
             // Madera
             if (game.workers.wood > 0 && !game.striking.wood) {
-                game.fatigue.wood = Math.min(100, game.fatigue.wood + game.workers.wood * 1.8);
+                game.fatigue.wood = Math.min(100, game.fatigue.wood + game.workers.wood * 1.8 * fatigueReduction);
                 woodProd = game.workers.wood * 0.15 * woodcutterMult;
                 if (game.fatigue.wood >= 100) triggerStrike('wood');
             } else if (game.striking.wood) {
@@ -3292,7 +4279,7 @@
 
             // Piedra
             if (game.workers.stone > 0 && !game.striking.stone) {
-                game.fatigue.stone = Math.min(100, game.fatigue.stone + game.workers.stone * 2.0);
+                game.fatigue.stone = Math.min(100, game.fatigue.stone + game.workers.stone * 2.0 * fatigueReduction);
                 stoneProd = game.workers.stone * 0.1 * woodcutterMult;
                 if (game.fatigue.stone >= 100) triggerStrike('stone');
             } else if (game.striking.stone) {
@@ -3304,7 +4291,7 @@
 
             // Ciencia
             if (game.workers.science > 0 && !game.striking.science) {
-                game.fatigue.science = Math.min(100, game.fatigue.science + game.workers.science * 2.2);
+                game.fatigue.science = Math.min(100, game.fatigue.science + game.workers.science * 2.2 * fatigueReduction);
                 scienceProd = game.workers.science * 0.12 * (game.senda === 'mente' ? 1.5 : 1.0) * scienceMult * relicSci;
                 if (game.fatigue.science >= 100) triggerStrike('science');
             } else if (game.striking.science) {
@@ -3320,7 +4307,9 @@
             game.science += scienceProd;
 
             // Fe sacra pasiva
-            game.faith += 0.04 * game.population;
+            let faithFactor = 0.04;
+            if (game.leaders.priest) faithFactor *= 1.5; // Socket Sacerdote
+            game.faith += faithFactor * game.population;
 
             // Consumo de Comida
             let consumption = game.population * 0.03;
@@ -3335,7 +4324,6 @@
                     recalculateUnassignedWorkers();
                 }
             } else {
-                // Nacimiento al azar si hay comida
                 const maxPop = game.techTree.agriculture.researched ? 20 : 15;
                 if (game.food > game.population * 6 && game.population < maxPop && Math.random() < 0.08) {
                     game.population++;
@@ -3345,32 +4333,167 @@
                 }
             }
 
-            // Tensión de crisis
-            if (!game.crisisActive) {
-                game.crisisProgress += 1.2 + (game.era * 0.2);
-                if (game.crisisProgress >= 100) {
-                    triggerCrisis();
+            // --- GESTIÓN DE RIESGOS (Microcivilization Style) ---
+            if (!game.crisisActive && !game.prestigeAnimation) {
+                // 1. Incendio (Sube si hay madera y fatiga en leñadores, baja si hay trabajadores ociosos)
+                const idleWorkers = game.population - (game.workers.food + game.workers.wood + game.workers.stone + game.workers.science);
+                game.risks.fire = Math.min(100, Math.max(0, game.risks.fire + (game.workers.wood * 0.8) - (idleWorkers * 1.5)));
+
+                // 2. Peste (Sube si población es alta y comida baja)
+                const foodDeficit = Math.max(0, (game.population * 4) - game.food);
+                game.risks.disease = Math.min(100, Math.max(0, game.risks.disease + (game.population * 0.06) - (game.food * 0.02)));
+
+                // 3. Revuelta (Sube si fatiga general es alta)
+                let avgFatigue = (game.fatigue.food + game.fatigue.wood + game.fatigue.stone + game.fatigue.science) / 4;
+                game.risks.riot = Math.min(100, Math.max(0, game.risks.riot + (avgFatigue * 0.12) - (game.faith * 0.02)));
+
+                // 4. Invasión
+                game.risks.invasion = Math.min(100, game.risks.invasion + 1.2 + (game.era * 0.2));
+
+                // Detonar desastres
+                if (game.risks.fire >= 100 && !game.disasters.fire.active) {
+                    triggerFireDisaster();
                 }
-            } else {
+                if (game.risks.disease >= 100 && !game.disasters.disease.active) {
+                    triggerDiseaseDisaster();
+                }
+                if (game.risks.riot >= 100 && !game.disasters.riot.active) {
+                    triggerRiotDisaster();
+                }
+                if (game.risks.invasion >= 100) {
+                    triggerCrisis();
+                    game.risks.invasion = 0;
+                }
+            }
+
+            // Gestión de desastres activos ticking
+            if (game.disasters.fire.active) {
+                game.disasters.fire.timer--;
+                if (game.disasters.fire.timer <= 0) {
+                    resolveFireFailure();
+                }
+            }
+            if (game.disasters.disease.active) {
+                game.disasters.disease.timer--;
+                if (game.disasters.disease.timer <= 0) {
+                    resolveDiseaseFailure();
+                }
+            }
+            if (game.disasters.riot.active) {
+                game.disasters.riot.timer--;
+                if (game.disasters.riot.timer <= 0) {
+                    resolveRiotFailure();
+                }
+            }
+
+            // Invasión crisis ticking
+            if (game.crisisActive) {
                 game.crisisTimer--;
                 if (game.crisisTimer <= 0) {
                     resolveCrisisFailure();
                 }
             }
 
-            // Scroll offset de caminata
             scrollOffset += 6;
-
-            // Actualizar expedición dungeons & puerto
             updateDungeonProgress();
             updateHarbor();
+            updateUI();
+        }
 
+        // --- DISASTER DETONATION (Microcivilization Style) ---
+        function triggerFireDisaster() {
+            game.disasters.fire.active = true;
+            game.disasters.fire.timer = 20;
+            
+            // Generar 3 puntos de fuego en el canvas en pisos al azar
+            const canvasW = townCanvas.width || 300;
+            const groundY = townCanvas.height - 12;
+            const floorH = 28;
+            game.disasters.fire.nodes = [];
+            
+            for (let i = 0; i < 3; i++) {
+                let floor = Math.floor(Math.random() * 4);
+                game.disasters.fire.nodes.push({
+                    x: canvasW / 2 + (Math.random() - 0.5) * 50,
+                    y: groundY - (floor * floorH) - 4
+                });
+            }
+
+            showToast("🔥 ¡INCENDIO!", "Fuego en la Torre. Haz clic en las llamas para extinguirlas.");
+            playTone(100, 'sawtooth', 0.5);
+        }
+
+        function resolveFireFailure() {
+            game.disasters.fire.active = false;
+            game.risks.fire = 0;
+            game.wood = Math.max(0, game.wood - 80);
+            game.population = Math.max(5, game.population - 2);
+            showToast("💥 Daño de Incendio", "Se quemaron 🪵80 y murieron 2 aldeanos.");
+            recalculateUnassignedWorkers();
+            updateUI();
+        }
+
+        function triggerDiseaseDisaster() {
+            game.disasters.disease.active = true;
+            game.disasters.disease.timer = 20;
+
+            // Infectar 4 citizens al azar
+            let infected = 0;
+            game.citizens.forEach(c => {
+                if (infected < 4 && Math.random() < 0.5) {
+                    c.state = 'sick';
+                    infected++;
+                }
+            });
+
+            showToast("🤢 ¡BROTE DE PESTE!", "Ciudadanos contagiados. Haz clic en ellos para vacunarlos.");
+            playTone(120, 'sawtooth', 0.5);
+        }
+
+        function resolveDiseaseFailure() {
+            game.disasters.disease.active = false;
+            game.risks.disease = 0;
+            game.citizens.forEach(c => {
+                if (c.state === 'sick') c.state = 'idle';
+            });
+            game.population = Math.max(5, game.population - 4);
+            showToast("💀 Plaga Mortal", "4 ciudadanos contagiados perecieron.");
+            recalculateUnassignedWorkers();
+            updateUI();
+        }
+
+        function triggerRiotDisaster() {
+            game.disasters.riot.active = true;
+            game.disasters.riot.timer = 20;
+
+            // 4 rebeldes
+            let rioters = 0;
+            game.citizens.forEach(c => {
+                if (rioters < 4 && Math.random() < 0.5) {
+                    c.state = 'rioting';
+                    rioters++;
+                }
+            });
+
+            showToast("✊ ¡REVUELTA!", "Huelguistas bloquean la torre. Haz clic en ellos para sobornarlos (🪙30).");
+            playTone(150, 'sawtooth', 0.5);
+        }
+
+        function resolveRiotFailure() {
+            game.disasters.riot.active = false;
+            game.risks.riot = 0;
+            game.citizens.forEach(c => {
+                if (c.state === 'rioting') c.state = 'idle';
+            });
+            game.gold = Math.max(0, game.gold - 80);
+            game.science = Math.max(0, game.science - 40);
+            showToast("✊ Torre Saqueada", "Los rebeldes destrozaron laboratorios y robaron 🪙80.");
             updateUI();
         }
 
         function triggerStrike(gremio) {
             game.striking[gremio] = true;
-            showToast("⚠️ Huelga Laboral", `Los trabajadores de ${gremio.toUpperCase()} se niegan a cooperar.`);
+            showToast("⚠️ Huelga Laboral", `Los trabajadores de ${gremio.toUpperCase()} detuvieron labores.`);
             playTone(120, 'sawtooth', 0.4);
         }
 
@@ -3384,11 +4507,10 @@
             game.crisisProgress = 0;
             game.crisisTimer = 30;
             game.crisisStage = 1;
+            game.townInvaders = []; // Clear town invaders
 
-            showToast("🚨 ASEDIO EN CURSO", "Bárbaros avanzan a las puertas.");
+            showToast("🚨 ASEDIO BÁRBARO", "Invasores atacan las escaleras.");
             playTone(100, 'sawtooth', 0.3);
-            playTone(100, 'sawtooth', 0.3);
-
             spawnEnemy();
             updateUI();
         }
@@ -3396,14 +4518,21 @@
         function resolveCrisisSuccess() {
             game.crisisActive = false;
             game.crisisProgress = 0;
+            game.townInvaders = []; // Clear town invaders
             game.gold += 120;
             showToast("✨ Asedio Repelido", "La torre de Babel resistió.");
+            
+            // Logro por boss final
+            if (game.crisisStage >= 3) {
+                unlockAchievement('silent_boss');
+            }
             updateUI();
         }
 
         function resolveCrisisFailure() {
             game.crisisActive = false;
             game.crisisProgress = 0;
+            game.townInvaders = []; // Clear town invaders
             game.population = Math.max(5, game.population - 3);
             game.gold = Math.max(0, game.gold - 60);
             showToast("💥 Murallas Roteadas", "El asedio mató 3 aldeanos y saquearon las arcas.");
@@ -3474,7 +4603,6 @@
             }
         }
 
-        // Atajo teclado
         window.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'b') {
                 const check = document.getElementById('clickthrough-check');
@@ -3552,6 +4680,7 @@
         }
 
         function clickGather() {
+            // Un clic otorga recursos y simula lanzar un aldeano
             game.food += 1.5;
             game.wood += 0.8;
             if (game.era >= 1) game.stone += 0.4;
@@ -3584,7 +4713,7 @@
                 }
             } else {
                 document.querySelectorAll('#right-tab-heroes, #right-tab-pantheon, #right-tab-explore, #right-tab-skins, #right-tab-achievements').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('#fullscreen-view .tabs-row:nth-child(1) .tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('#fullscreen-view .tabs-row:nth-child(2) .tab-btn').forEach(btn => btn.classList.remove('active')); // tab selector
                 
                 if (tabName === 'heroes') document.getElementById('right-tab-heroes').classList.add('active');
                 if (tabName === 'pantheon') document.getElementById('right-tab-pantheon').classList.add('active');
@@ -3601,6 +4730,7 @@
                     renderAchievements();
                 }
             }
+            // highlight tab button
             event.target.classList.add('active');
             playTone(700, 'sine', 0.04);
         }
@@ -3622,6 +4752,76 @@
             }, 3500);
         }
 
+        // --- SISTEMA DE CONTROL DE SOCKETS HÉROES (Microcivilization Sockets UI) ---
+        function updateSocketsUI() {
+            const types = {
+                general: { label: 'GENERAL', defaultIcon: '⚔️', title: 'Líder Militar (+50% ATK)' },
+                inspector: { label: 'INSPECTOR', defaultIcon: '👷', title: 'Supervisor (-30% Fatiga)' },
+                priest: { label: 'SACERDOTE', defaultIcon: '🔮', title: 'Sumo Sacerdote (+50% Fe)' }
+            };
+
+            for (let key in types) {
+                const socketEl = document.getElementById(`socket-${key}`);
+                if (!socketEl) continue;
+
+                const hero = game.leaders[key];
+                if (!hero) {
+                    // Empty state
+                    socketEl.style.border = '2px dashed var(--border-pixel)';
+                    socketEl.style.background = 'rgba(0,0,0,0.5)';
+                    socketEl.style.boxShadow = 'none';
+                    socketEl.style.animation = 'none';
+                    socketEl.innerHTML = `
+                        <div style="font-size:7px; color:var(--text-secondary); font-family:'Press Start 2P', monospace; margin-bottom: 2px;">${types[key].label}</div>
+                        <div style="font-size:16px; margin: 4px 0;">${types[key].defaultIcon}</div>
+                        <div style="font-size:8px; color:var(--text-secondary); font-family:'Press Start 2P', monospace;">[ VACÍO ]</div>
+                    `;
+                } else {
+                    // Filled state
+                    let borderCol = 'var(--border-pixel)';
+                    let bgCol = 'rgba(0,0,0,0.7)';
+                    let glow = 'none';
+                    let anim = 'none';
+                    let starStr = '⭐';
+                    const rarity = hero.rarity || 'Common';
+
+                    if (rarity === 'Rare') {
+                        borderCol = '#22c55e';
+                        bgCol = 'rgba(20, 83, 45, 0.75)';
+                        glow = '0 0 8px rgba(34, 197, 94, 0.5)';
+                        starStr = '⭐⭐';
+                    } else if (rarity === 'Epic') {
+                        borderCol = '#a855f7';
+                        bgCol = 'rgba(88, 28, 135, 0.75)';
+                        glow = '0 0 10px rgba(168, 85, 247, 0.6)';
+                        starStr = '⭐⭐⭐';
+                    } else if (rarity === 'Legendary') {
+                        borderCol = '#facc15';
+                        bgCol = 'rgba(120, 53, 4, 0.8)';
+                        glow = '0 0 12px rgba(250, 204, 21, 0.8)';
+                        anim = 'pulse-gacha 1.5s infinite alternate';
+                        starStr = '⭐⭐⭐⭐';
+                    }
+
+                    socketEl.style.border = `2px solid ${borderCol}`;
+                    socketEl.style.background = bgCol;
+                    socketEl.style.boxShadow = glow;
+                    socketEl.style.animation = anim;
+
+                    let heroIcon = '⚔️';
+                    if (hero.baseSprite === 'elara') heroIcon = '🔮';
+                    if (hero.baseSprite === 'lyra') heroIcon = '🏹';
+
+                    socketEl.innerHTML = `
+                        <div style="font-size:6px; color:#fff; font-family:'Press Start 2P', monospace; background:rgba(0,0,0,0.5); padding: 1px 0; border-radius:2px; margin-bottom: 2px;">${types[key].label}</div>
+                        <div style="font-size:18px; margin: 2px 0; display:flex; justify-content:center; align-items:center;">${heroIcon}</div>
+                        <div style="font-size:8px; font-weight:700; color:#fff; font-family:'Press Start 2P', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${hero.name.split(' ')[0]}</div>
+                        <div style="font-size:6px; color:#facc15; margin-top:2px;">${starStr}</div>
+                    `;
+                }
+            }
+        }
+
 
         // --- ACTUALIZACION UI GENERAL ---
         function updateUI() {
@@ -3638,6 +4838,12 @@
             document.getElementById('qty-wood').innerText = game.workers.wood;
             document.getElementById('qty-stone').innerText = game.workers.stone;
             document.getElementById('qty-science').innerText = game.workers.science;
+
+            // Update Microcivilization Risk HUD fills
+            document.getElementById('risk-fire-fill').style.width = `${game.risks.fire}%`;
+            document.getElementById('risk-disease-fill').style.width = `${game.risks.disease}%`;
+            document.getElementById('risk-riot-fill').style.width = `${game.risks.riot}%`;
+            document.getElementById('risk-invasion-fill').style.width = `${game.risks.invasion}%`;
 
             const total = game.workers.food + game.workers.wood + game.workers.stone + game.workers.science;
             document.getElementById('unassigned-workers').innerText = Math.max(0, game.population - total);
@@ -3685,27 +4891,61 @@
                 if (h.sprite.startsWith('elara')) icon = '🔮';
                 if (h.sprite.startsWith('lyra')) icon = '🏹';
 
+                let borderCol = 'var(--border-color)';
+                let bgCol = 'rgba(0, 0, 0, 0.3)';
+                let glow = 'none';
+                let starStr = '⭐';
+                const rarity = h.rarity || 'Common';
+
+                if (rarity === 'Rare') {
+                    borderCol = '#22c55e';
+                    bgCol = 'rgba(20, 83, 45, 0.2)';
+                    starStr = '⭐⭐';
+                } else if (rarity === 'Epic') {
+                    borderCol = '#a855f7';
+                    bgCol = 'rgba(88, 28, 135, 0.2)';
+                    glow = '0 0 6px rgba(168, 85, 247, 0.3)';
+                    starStr = '⭐⭐⭐';
+                } else if (rarity === 'Legendary') {
+                    borderCol = '#facc15';
+                    bgCol = 'rgba(250, 204, 21, 0.15)';
+                    glow = '0 0 10px rgba(250, 204, 21, 0.5)';
+                    starStr = '⭐⭐⭐⭐';
+                }
+
+                card.style.border = `2px solid ${borderCol}`;
+                card.style.background = bgCol;
+                card.style.boxShadow = glow;
+
                 card.innerHTML = `
                     <div style="font-size:24px;">${icon}</div>
                     <div class="hero-details">
                         <span class="name">
-                            <span>${h.name}</span>
+                            <span style="font-family:'Press Start 2P', monospace; font-size:7.5px;">${h.name.split(' ')[0]} <span style="font-size:6px; color:#facc15;">${starStr}</span></span>
+                            <div style="display:flex; gap:2px;">
+                                <button class="btn-action-small" onclick="equipHero('${h.id}', 'general')" style="font-size:5px; padding:2px; height:max-content; border:1px solid #fff;" title="Asignar General">⚔️ G</button>
+                                <button class="btn-action-small" onclick="equipHero('${h.id}', 'inspector')" style="font-size:5px; padding:2px; height:max-content; border:1px solid #fff;" title="Asignar Inspector">👷 I</button>
+                                <button class="btn-action-small" onclick="equipHero('${h.id}', 'priest')" style="font-size:5px; padding:2px; height:max-content; border:1px solid #fff;" title="Asignar Sacerdote">🔮 S</button>
+                            </div>
                         </span>
-                        <span class="skill">HP: ${h.hp}/${h.maxHp} | ATK: ${h.dmg} | ${h.activeBuff}</span>
+                        <span class="skill" style="font-size:8px;">HP: ${h.hp}/${h.maxHp} | ATK: ${h.dmg} | <span style="color:#facc15;">${h.activeBuff}</span></span>
                     </div>
                 `;
                 hList.appendChild(card);
             });
+
+            // Update Sockets
+            updateSocketsUI();
         }
 
 
-        // --- MOTOR DE JUEGO PRINCIPAL CON DUAL LOOPS ---
+        // --- MOTOR DE JUEGO PRINCIPAL ---
         let lastTick = Date.now();
         let lastBattle = Date.now();
 
         function mainLoop() {
             const now = Date.now();
-            const delay = game.isMinimized ? 1000 : 100; // FPS Throttling a 1 FPS en fondo
+            const delay = game.isMinimized ? 1000 : 100;
 
             if (now - lastBattle >= delay) {
                 updateBattlePhysics();
@@ -3720,7 +4960,6 @@
             requestAnimationFrame(mainLoop);
         }
 
-        // Ahorro de FPS al ocultar pestaña
         document.addEventListener('visibilitychange', () => {
             game.isMinimized = document.hidden;
             if (document.hidden) {
@@ -3731,11 +4970,12 @@
         });
 
 
-        // --- INICIALIZACIÓN DE LA APLICACIÓN ---
+        // --- INICIALIZACIÓN ---
         window.onload = function() {
             setWeather('clear');
             renderRelics();
             renderAchievements();
+            initCitizens();
 
             for (let i = 0; i < 4; i++) addSkillBlock();
             
