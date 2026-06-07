@@ -4160,6 +4160,25 @@
             playTone(880, 'sine', 0.1);
             playTone(1000, 'sine', 0.2);
 
+            // Mapear el ID de logro local a los IDs configurados en Steamworks
+            const achievementMap = {
+                first_era: 'NEW_BEGINNING',
+                ultimate_combo: 'DIVINE_JUDGEMENT',
+                prestige_once: 'TOWER_OF_ASHES',
+                legendary_hero: 'TAVERN_PATRON',
+                custom_skin: 'MASTER_CRAFTSMAN',
+                silent_boss: 'SILENT_SUPERVISOR'
+            };
+
+            const steamId = achievementMap[id];
+            if (steamId) {
+                if (isElectron) {
+                    window.electronAPI.triggerSteamAchievement(steamId);
+                } else if (isTauri) {
+                    window.__TAURI__.invoke('trigger_steam_achievement', { id: steamId }).catch(() => {});
+                }
+            }
+
             writeChronicle(`Se otorgó la medalla divina de [${ach.title}] a la dinastía.`);
             renderAchievements();
         }
@@ -4557,6 +4576,9 @@
             }
         }
 
+        // Detectar si el juego se ejecuta dentro de los wrappers de escritorio (Electron o Tauri)
+        const isElectron = typeof window.electronAPI !== 'undefined';
+        const isTauri = typeof window.__TAURI__ !== 'undefined';
 
         // --- CONTROLES DE VISTA E INTEGRACIONES WIDGET/WALLPAPER ---
         function toggleViewMode(mode) {
@@ -4570,6 +4592,16 @@
                     fs.style.display = 'none';
                     tb.classList.add('active');
                 }, 200);
+
+                // Notificar a wrappers nativos para activar el modo widget de escritorio
+                if (isElectron) {
+                    window.electronAPI.switchViewMode('widget');
+                } else if (isTauri) {
+                    const currentWin = window.__TAURI__.window.getCurrent();
+                    currentWin.setSize(new window.__TAURI__.window.PhysicalSize(window.screen.width, 55));
+                    currentWin.setPosition(new window.__TAURI__.window.PhysicalPosition(0, window.screen.height - 95));
+                    window.__TAURI__.invoke('set_always_on_top', { enabled: true });
+                }
             } else {
                 tb.classList.remove('active');
                 setTimeout(() => {
@@ -4578,6 +4610,16 @@
                         fs.style.opacity = '1';
                     }, 50);
                 }, 200);
+
+                // Restaurar ventana fullscreen nativa
+                if (isElectron) {
+                    window.electronAPI.switchViewMode('fullscreen');
+                } else if (isTauri) {
+                    const currentWin = window.__TAURI__.window.getCurrent();
+                    currentWin.setSize(new window.__TAURI__.window.PhysicalSize(1280, 720));
+                    currentWin.center();
+                    window.__TAURI__.invoke('set_always_on_top', { enabled: false });
+                }
             }
         }
 
@@ -4595,11 +4637,18 @@
             document.body.style.opacity = val / 100;
         }
 
+        // Toggled de Click-Through para hacer la ventana transparente al mouse a nivel del OS
         function toggleClickThrough(checked) {
             game.clickThrough = checked;
             document.body.classList.toggle('click-through', checked);
             if (checked) {
                 showToast("👻 Transparencia Click-Thru", "Haz clic a través de la ventana. Ctrl+Alt+B para salir.");
+            }
+
+            if (isElectron) {
+                window.electronAPI.setClickThrough(checked);
+            } else if (isTauri) {
+                window.__TAURI__.invoke('set_click_through', { enabled: checked }).catch(() => {});
             }
         }
 
@@ -4981,6 +5030,26 @@
             
             spawnEnemy();
             updateUI();
+
+            // Sincronizaciones con el Wrapper de Escritorio (Electron / Steam)
+            if (isElectron) {
+                window.electronAPI.onViewModeSwitched((mode) => {
+                    if (mode === 'widget') {
+                        toggleViewMode('taskbar');
+                    } else {
+                        toggleViewMode('fullscreen');
+                    }
+                });
+
+                // Cargar perfil del piloto de Steam si está disponible
+                window.electronAPI.getSteamProfile().then(profile => {
+                    if (profile && profile.loggedIn) {
+                        showToast(`🎮 Steamworks Conectado`, `¡Hola, ${profile.screenName}! Logros activos.`);
+                        const brandSpan = document.querySelector('.brand span');
+                        if (brandSpan) brandSpan.innerText = `STEAM PILOT: ${profile.screenName.toUpperCase()}`;
+                    }
+                });
+            }
 
             requestAnimationFrame(mainLoop);
         };

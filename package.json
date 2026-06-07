@@ -1,0 +1,27 @@
+{
+  "name": "ages-of-babel",
+  "version": "1.0.0",
+  "description": "Ages of Babel - Idle 4X Strategy Game with Desktop Taskbar Widget & Steam Integration",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "npm start",
+    "package": "electron-packager . AgesOfBabel --platform=win32 --arch=x64 --out=dist --overwrite"
+  },
+  "keywords": [
+    "idle",
+    "strategy",
+    "pixelart",
+    "steam",
+    "widget",
+    "taskbar"
+  ],
+  "author": "DOMINUSBABEL",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-packager": "^17.1.2",
+    "steamworks.js": "^0.3.0"
+  }
+}
