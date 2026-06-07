@@ -966,9 +966,63 @@
             box-shadow: inset 0 0 10px #000;
             color: #fbcfe8;
         }
+        
+        /* Custom Premium SOTA Tooltip */
+        .custom-tooltip {
+            position: absolute;
+            background: rgba(9, 14, 34, 0.96);
+            border: 2px solid var(--accent);
+            padding: 8px 12px;
+            color: #f8fafc;
+            font-size: 9px;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.4;
+            pointer-events: none;
+            z-index: 99999;
+            width: 250px;
+            box-shadow: 4px 4px 0px #000;
+            display: none;
+            backdrop-filter: blur(8px);
+            border-radius: 2px;
+        }
+        .custom-tooltip .tooltip-title {
+            color: #facc15;
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 0px #000;
+            font-family: 'Press Start 2P', monospace;
+            border-bottom: 1.5px solid var(--border-color);
+            padding-bottom: 4px;
+        }
+        .custom-tooltip .tooltip-desc {
+            font-size: 11px;
+            color: #cbd5e1;
+            margin-bottom: 5px;
+        }
+        .custom-tooltip .tooltip-cost {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 7px;
+            color: #ef4444;
+            margin-top: 4px;
+            background: rgba(0,0,0,0.3);
+            padding: 3px;
+            border-left: 2px solid #ef4444;
+        }
+        .custom-tooltip .tooltip-flavor {
+            font-style: italic;
+            font-size: 10px;
+            color: #94a3b8;
+            border-top: 1px dashed rgba(255,255,255,0.15);
+            padding-top: 5px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Tooltip Elemento Global -->
+    <div id="custom-tooltip" class="custom-tooltip"></div>
 
     <button id="exit-wallpaper-btn" onclick="toggleWallpaperMode(false)">SALIR WALLPAPER</button>
 
@@ -1032,35 +1086,35 @@
 
                     <!-- Pestaña: Recursos -->
                     <div class="tab-content active" id="left-tab-resources">
-                        <div class="resource-card">
+                        <div class="resource-card" data-tooltip-title="👨‍👩‍👦 Población" data-tooltip-desc="El tamaño actual de tu tribu. Determina la fe generada y la fuerza de trabajo disponible." data-tooltip-flavor="'Muchos brazos para levantar la gran torre, muchas almas para suplicar a las estrellas.'">
                             <span class="lbl">👨‍👩‍👦 Población</span>
                             <span class="qty" id="res-population">10</span>
                         </div>
-                        <div class="resource-card">
+                        <div class="resource-card" data-tooltip-title="🌾 Comida" data-tooltip-desc="Sustento vital de tu pueblo. Si se agota, los aldeanos morirán por hambruna. Con abundancia, nacerán nuevos aldeanos." data-tooltip-flavor="'La cebada y el trigo guían el crecimiento de la civilización.'">
                             <span class="lbl">🌾 Comida</span>
                             <span class="qty" id="res-food">50</span>
                         </div>
-                        <div class="resource-card">
+                        <div class="resource-card" data-tooltip-title="🪵 Madera" data-tooltip-desc="Recurso básico para edificar andamios y barcos. Aumenta el riesgo de incendio si se acumula en exceso." data-tooltip-flavor="'Ramas del bosque sagrado cortadas por manos cansadas.'">
                             <span class="lbl">🪵 Madera</span>
                             <span class="qty" id="res-wood">0</span>
                         </div>
-                        <div class="resource-card">
+                        <div class="resource-card" data-tooltip-title="🪨 Piedra" data-tooltip-desc="Piedra cortada de la meseta. Esencial para erigir los cimientos de eras superiores y expandir la torre." data-tooltip-flavor="'La tierra nos regala sus costras más duras.'">
                             <span class="lbl">🪨 Piedra</span>
                             <span class="qty" id="res-stone">0</span>
                         </div>
-                        <div class="resource-card">
+                        <div class="resource-card" data-tooltip-title="🪙 Oro" data-tooltip-desc="La divisa comercial de Babel. Se usa para contratar héroes en la taberna y sobornar gremios rebeldes." data-tooltip-flavor="'El brillo que corrompe pero facilita el orden.'">
                             <span class="lbl">🪙 Oro</span>
                             <span class="qty" id="res-gold">50</span>
                         </div>
-                        <div class="resource-card">
+                        <div class="resource-card" data-tooltip-title="💡 Ciencia" data-tooltip-desc="Conocimiento acumulado por tus investigadores. Permite desbloquear nuevas tecnologías y avanzar de era." data-tooltip-flavor="'De la chispa del fuego a las leyes de la física.'">
                             <span class="lbl">💡 Ciencia</span>
                             <span class="qty" id="res-science">0</span>
                         </div>
-                        <div class="resource-card">
+                        <div class="resource-card" data-tooltip-title="✨ Fe Sacra" data-tooltip-desc="Devoción espiritual de tu pueblo. Se consume para invocar Milagros Celestiales (Rayo, Escudo, Bendición)." data-tooltip-flavor="'Las plegarias se elevan más rápido que las piedras de la torre.'">
                             <span class="lbl">✨ Fe Sacra</span>
                             <span class="qty" id="res-faith">0</span>
                         </div>
-                        <div class="resource-card" style="border-color: #facc15;">
+                        <div class="resource-card" style="border-color: #facc15;" data-tooltip-title="💎 Fragmentos del Firmamento" data-tooltip-desc="Moneda de prestigio celestial obtenida tras colapsar la Torre de Babel. Se gasta en comprar reliquias permanentes." data-tooltip-flavor="'Restos de estrellas caídas durante la caída de anteriores civilizaciones.'">
                             <span class="lbl" style="color: #facc15;">💎 Fragmentos</span>
                             <span class="qty" id="res-shards" style="color: #facc15;">0</span>
                         </div>
@@ -1073,11 +1127,11 @@
                         </div>
                         <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom: 5px; background:rgba(0,0,0,0.2); padding: 4px;">
                             <span>Libres: <strong id="unassigned-workers">10</strong></span>
-                            <button class="btn-action-small" onclick="restAllWorkers()" style="font-size:6px; padding:2px 4px;">Descansar Todo (🪙25)</button>
+                            <button class="btn-action-small" onclick="restAllWorkers()" style="font-size:6px; padding:2px 4px;" data-tooltip-title="💤 Descansar Todo" data-tooltip-desc="Restablece a 0% el estrés y fatiga de todos los gremios activos, cancelando cualquier huelga." data-tooltip-cost="Costo: 🪙25 de Oro" data-tooltip-flavor="'Un festival de descanso para calmar los ánimos del pueblo.'">Descansar Todo (🪙25)</button>
                         </div>
                         
                         <!-- Cosechadores -->
-                        <div class="worker-row">
+                        <div class="worker-row" data-tooltip-title="🌾 Agricultores" data-tooltip-desc="Generan comida pasivamente. Su trabajo genera estrés; al llegar al 100%, irán a la huelga." data-tooltip-cost="Asigna con +/-" data-tooltip-flavor="'Doblando la espalda bajo el sol de la meseta.'">
                             <div class="worker-header">
                                 <span>🌾 Agricultores</span>
                                 <div style="display:flex; align-items:center;">
@@ -1096,7 +1150,7 @@
                         </div>
 
                         <!-- Leñadores -->
-                        <div class="worker-row">
+                        <div class="worker-row" data-tooltip-title="🪵 Leñadores" data-tooltip-desc="Talan los bosques cercanos para obtener madera. Al llegar a 100% de estrés se detienen." data-tooltip-cost="Asigna con +/-" data-tooltip-flavor="'El hacha resuena entre el follaje espeso.'">
                             <div class="worker-header">
                                 <span>🪵 Leñadores</span>
                                 <div style="display:flex; align-items:center;">
@@ -1115,7 +1169,7 @@
                         </div>
 
                         <!-- Canteros -->
-                        <div class="worker-row">
+                        <div class="worker-row" data-tooltip-title="🪨 Canteros" data-tooltip-desc="Extraen roca caliza y granito de las canteras. Su trabajo es físicamente agotador." data-tooltip-cost="Asigna con +/-" data-tooltip-flavor="'El granito cede ante la persistencia de los cinceles.'">
                             <div class="worker-header">
                                 <span>🪨 Canteros</span>
                                 <div style="display:flex; align-items:center;">
@@ -1134,7 +1188,7 @@
                         </div>
 
                         <!-- Científicos -->
-                        <div class="worker-row">
+                        <div class="worker-row" data-tooltip-title="💡 Investigadores" data-tooltip-desc="Estudian las estrellas y el entorno para generar Ciencia. Sufren desgaste mental rápido." data-tooltip-cost="Asigna con +/-" data-tooltip-flavor="'Buscando patrones en el caos del cosmos.'">
                             <div class="worker-header">
                                 <span>💡 Investigadores</span>
                                 <div style="display:flex; align-items:center;">
@@ -1214,17 +1268,17 @@
                         <span class="panel-title" style="margin-top:0; font-size:7px;">Líderes Asignados (Sockets)</span>
                         <div style="display:flex; justify-content:space-between; gap:6px;">
                             <!-- General -->
-                            <div id="socket-general" class="hero-socket" style="flex:1; border:2px dashed var(--border-pixel); background:rgba(0,0,0,0.5); text-align:center; padding:4px; cursor:pointer;" onclick="unequipHero('general')" title="Líder Militar (Aumenta ataque físico +50%)">
+                            <div id="socket-general" class="hero-socket" style="flex:1; border:2px dashed var(--border-pixel); background:rgba(0,0,0,0.5); text-align:center; padding:4px; cursor:pointer;" onclick="unequipHero('general')" data-tooltip-title="⚔️ Socket de General" data-tooltip-desc="Asigna un líder militar aquí para aumentar el daño físico de tus fuerzas en +50%." data-tooltip-flavor="'La voz de mando que ordena las filas frente a los bárbaros.'">
                                 <div style="font-size:18px;">⚔️</div>
                                 <div style="font-size:8px; color:var(--text-secondary);" id="socket-general-name">Vacío</div>
                             </div>
                             <!-- Inspector -->
-                            <div id="socket-inspector" class="hero-socket" style="flex:1; border:2px dashed var(--border-pixel); background:rgba(0,0,0,0.5); text-align:center; padding:4px; cursor:pointer;" onclick="unequipHero('inspector')" title="Supervisor de Trabajo (Reduce fatiga -30%)">
+                            <div id="socket-inspector" class="hero-socket" style="flex:1; border:2px dashed var(--border-pixel); background:rgba(0,0,0,0.5); text-align:center; padding:4px; cursor:pointer;" onclick="unequipHero('inspector')" data-tooltip-title="👷 Socket de Inspector" data-tooltip-desc="Asigna un supervisor aquí para reducir la fatiga y el estrés de los aldeanos en -30%." data-tooltip-flavor="'La mirada atenta que previene el descontento en los andamios.'">
                                 <div style="font-size:18px;">👷</div>
                                 <div style="font-size:8px; color:var(--text-secondary);" id="socket-inspector-name">Vacío</div>
                             </div>
                             <!-- Sacerdote -->
-                            <div id="socket-priest" class="hero-socket" style="flex:1; border:2px dashed var(--border-pixel); background:rgba(0,0,0,0.5); text-align:center; padding:4px; cursor:pointer;" onclick="unequipHero('priest')" title="Sumo Sacerdote (Aumenta fe sacra +50%)">
+                            <div id="socket-priest" class="hero-socket" style="flex:1; border:2px dashed var(--border-pixel); background:rgba(0,0,0,0.5); text-align:center; padding:4px; cursor:pointer;" onclick="unequipHero('priest')" data-tooltip-title="🔮 Socket de Sumo Sacerdote" data-tooltip-desc="Asigna un líder religioso aquí para potenciar la generación de Fe Sacra en +50%." data-tooltip-flavor="'El puente entre los ritos terrenales y las deidades celestes.'">
                                 <div style="font-size:18px;">🔮</div>
                                 <div style="font-size:8px; color:var(--text-secondary);" id="socket-priest-name">Vacío</div>
                             </div>
@@ -1243,7 +1297,7 @@
                     <div class="tab-content active" id="right-tab-heroes">
                         <div class="panel-title">Taverna de Babel (Gacha)</div>
                         
-                        <div class="gacha-pack-wrapper" id="gacha-pack" onclick="triggerGachaRoll()">
+                        <div class="gacha-pack-wrapper" id="gacha-pack" onclick="triggerGachaRoll()" data-tooltip-title="✨ Contratar Líder (Gacha)" data-tooltip-desc="Lanza una tirada en la taberna para contratar un nuevo líder con rareza aleatoria (Común, Raro, Épico, Legendario) y buffs específicos." data-tooltip-cost="Costo: 🪙100 de Oro" data-tooltip-flavor="'Mercenarios, sabios y aventureros buscan empleo en la posada del puerto.'">
                             <div class="gacha-card-inner">
                                 <div class="gacha-card-front">
                                     <span class="pack-orb">✨</span>
@@ -1269,15 +1323,15 @@
                     <div class="tab-content" id="right-tab-pantheon">
                         <div class="panel-title">Milagros Celestiales</div>
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-                            <button class="btn-action-small" onclick="castMiracle('lightning')" title="Lanza un rayo destructor sobre los enemigos">⚡ Rayo Sacro (✨20)</button>
-                            <button class="btn-action-small" onclick="castMiracle('shield')" title="Protege a tus héroes de todo daño por 10s">🛡️ Escudo Fe (✨15)</button>
-                            <button class="btn-action-small" onclick="castMiracle('rain')" title="Otorga lluvia, agua a campos (+100 comida) y cura el estrés">🌧️ Bendición (✨25)</button>
+                            <button class="btn-action-small" onclick="castMiracle('lightning')" data-tooltip-title="⚡ Rayo Sacro" data-tooltip-desc="Invoca un relámpago celestial que inflige 70 de daño directo al primer enemigo activo." data-tooltip-cost="Costo: ✨20 de Fe" data-tooltip-flavor="'La ira purificadora se desploma desde las alturas.'">⚡ Rayo Sacro (✨20)</button>
+                            <button class="btn-action-small" onclick="castMiracle('shield')" data-tooltip-title="🛡️ Escudo de Fe" data-tooltip-desc="Genera una barrera mística alrededor de tus héroes, haciéndolos inmunes a todo daño durante 10 segundos." data-tooltip-cost="Costo: ✨15 de Fe" data-tooltip-flavor="'Ningún acero cruzará la protección del firmamento.'">🛡️ Escudo Fe (✨15)</button>
+                            <button class="btn-action-small" onclick="castMiracle('rain')" data-tooltip-title="🌧️ Bendición Celestial" data-tooltip-desc="Cura todo el estrés obrero instantáneamente y otorga +100 comida." data-tooltip-cost="Costo: ✨25 de Fe" data-tooltip-flavor="'Agua bendita que fertiliza los campos y alivia el dolor obrero.'">🌧️ Bendición (✨25)</button>
                         </div>
                         
                         <div class="panel-title" style="margin-top:10px;">Colapso de Babel (Prestigio)</div>
                         <div style="background:rgba(239, 68, 68, 0.05); border: 2px solid rgba(239, 68, 68, 0.3); padding:8px; text-align:center;">
                             <p style="font-size:10px; margin-bottom:6px; color:var(--text-secondary);">Destruye el pueblo actual y asciende. Recibe Fragmentos del Firmamento basados en tu Ciencia.</p>
-                            <button class="btn-action-small" style="background:#ef4444; border-color:#fff;" onclick="triggerPrestige()">PROVOCAR COLAPSO</button>
+                            <button class="btn-action-small" style="background:#ef4444; border-color:#fff;" onclick="triggerPrestige()" data-tooltip-title="🔥 Colapso de Babel" data-tooltip-desc="Derrumba la torre actual. Perderás tus recursos ordinarios y volverás a la era de los nómadas, pero ascenderás con Fragmentos del Firmamento." data-tooltip-flavor="'Solo destruyendo los cimientos terrenales podremos rozar el verdadero firmamento.'">PROVOCAR COLAPSO</button>
                         </div>
 
                         <div class="panel-title" style="margin-top:10px;">Reliquias Permanentes</div>
@@ -1306,7 +1360,7 @@
                                 <select id="dungeon-hero-select" style="background:#000; color:#fff; border:1px solid var(--border-pixel); font-size:10px; flex:1;">
                                     <!-- Heroes list para explorar -->
                                 </select>
-                                <button class="btn-action-small" onclick="startDungeonExpedition()">Enviar</button>
+                                <button class="btn-action-small" onclick="startDungeonExpedition()" data-tooltip-title="🛒 Enviar Expedición" data-tooltip-desc="Envía al héroe seleccionado a explorar las ruinas bárbaras profundas. Luchará contra monstruos en ruta." data-tooltip-flavor="'La caravana viaja cargada de coraje hacia lo desconocido.'">Enviar</button>
                             </div>
                         </div>
 
@@ -1318,10 +1372,10 @@
                             </div>
                             <div id="harbor-ship-icon" style="font-size:24px; text-align:center; margin:2px 0;">⛵</div>
                             <div style="display:flex; gap:4px;">
-                                <button class="btn-action-small" onclick="dispatchTradeShip('gold')" style="flex:1;">Enviar a Vender (🪵50)</button>
-                                <button class="btn-action-small" onclick="dispatchTradeShip('science')" style="flex:1;">Enviar a Comprar (🪙60)</button>
+                                <button class="btn-action-small" onclick="dispatchTradeShip('gold')" style="flex:1;" data-tooltip-title="⛵ Enviar Barco a Vender" data-tooltip-desc="Exporta madera excedente para traer cargamento de oro (🪙150) tras 25 segundos." data-tooltip-cost="Costo: 🪵50 de Madera" data-tooltip-flavor="'Los mercaderes buscan madera de Babel para astilleros distantes.'">Enviar a Vender (🪵50)</button>
+                                <button class="btn-action-small" onclick="dispatchTradeShip('science')" style="flex:1;" data-tooltip-title="⛵ Enviar Barco a Comprar" data-tooltip-desc="Envía oro para importar planos e ideas científicas (💡80) tras 25 segundos." data-tooltip-cost="Costo: 🪙60 de Oro" data-tooltip-flavor="'Nuestros hombres traen pergaminos de lejanas bibliotecas costeras.'">Enviar a Comprar (🪙60)</button>
                             </div>
-                            <button class="btn-action-small" id="btn-harbor-claim" style="display:none; background:#22c55e; margin-top:6px;" onclick="claimHarborLoot()">RECLAMAR CARGAMENTO</button>
+                            <button class="btn-action-small" id="btn-harbor-claim" style="display:none; background:#22c55e; margin-top:6px;" onclick="claimHarborLoot()" data-tooltip-title="🎁 Reclamar Cargamento" data-tooltip-desc="Descarga la nave que acaba de atracar y añade las ganancias a tus arcas.">RECLAMAR CARGAMENTO</button>
                         </div>
                     </div>
 
@@ -1369,12 +1423,12 @@
             <!-- Acciones Inferiores -->
             <div class="actions-panel">
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <div class="clicker-orb" onclick="clickGather()">CLIC</div>
+                    <div class="clicker-orb" onclick="clickGather()" data-tooltip-title="⚡ Clic Celestial" data-tooltip-desc="Otorga recursos directos (Comida, Madera, Piedra, Oro) y causa 5 de daño al enemigo más cercano." data-tooltip-flavor="'La mano invisible del creador interviene en el destino de Babel.'">CLIC</div>
                     <div>
                         <h4 style="font-family:'Press Start 2P', monospace; font-size: 8px; margin-bottom: 4px;">Senda del Pueblo</h4>
                         <div style="display:flex; gap:6px;">
-                            <button class="btn-action-small" id="path-espada" onclick="setSenda('espada')" style="font-size:6px; background:#ef4444;">Senda Espada</button>
-                            <button class="btn-action-small" id="path-mente" onclick="setSenda('mente')" style="font-size:6px; background:#06b6d4;">Senda Mente</button>
+                            <button class="btn-action-small" id="path-espada" onclick="setSenda('espada')" style="font-size:6px; background:#ef4444;" data-tooltip-title="⚔️ Senda de la Espada" data-tooltip-desc="Vía militar. Desbloquea al Caballero Valerio y combos destructivos de acero en batalla." data-tooltip-flavor="'La paz solo se asegura con el filo del metal.'">Senda Espada</button>
+                            <button class="btn-action-small" id="path-mente" onclick="setSenda('mente')" style="font-size:6px; background:#06b6d4;" data-tooltip-title="🔮 Senda de la Mente" data-tooltip-desc="Vía de la sabiduría. Desbloquea al Chamán Elara y milagros de curación y tormentas." data-tooltip-flavor="'El poder reside en comprender los secretos de la creación.'">Senda Mente</button>
                         </div>
                     </div>
                 </div>
@@ -1926,12 +1980,12 @@
 
             // Tecnologías
             techTree: {
-                stone_tools: { id: 'stone_tools', label: 'Herramientas de Piedra', req: 30, researched: false, desc: 'Madera y Piedra +25%.' },
-                agriculture: { id: 'agriculture', label: 'Agricultura Organizada', req: 80, researched: false, desc: 'Comida +40%. Población Máx +5.' },
-                metallurgy: { id: 'metallurgy', label: 'Fundición de Bronce', req: 250, researched: false, desc: 'Daño base de héroes +30%.' },
-                writing: { id: 'writing', label: 'Código Escrito', req: 600, researched: false, desc: 'Ciencia +35%.' },
-                gunpowder: { id: 'gunpowder', label: 'Pólvora Prohibida', req: 1500, researched: false, desc: 'Defensa de asedio +50%. Fatiga +20%.' },
-                stellar_map: { id: 'stellar_map', label: 'Cúpula Astral', req: 3500, researched: false, desc: 'Costo de Reliquias -1 Fragmento.' }
+                stone_tools: { id: 'stone_tools', label: 'Herramientas de Piedra', req: 30, researched: false, desc: 'Madera y Piedra +25%.', flavor: 'Piedra tallada para domeñar la madera dura.' },
+                agriculture: { id: 'agriculture', label: 'Agricultura Organizada', req: 80, researched: false, desc: 'Comida +40%. Población Máx +5.', flavor: 'Campos ordenados alimentan dinastías enteras.' },
+                metallurgy: { id: 'metallurgy', label: 'Fundición de Bronce', req: 250, researched: false, desc: 'Daño base de héroes +30%.', flavor: 'El fuego funde la tierra revelando un metal superior.' },
+                writing: { id: 'writing', label: 'Código Escrito', req: 600, researched: false, desc: 'Ciencia +35%.', flavor: 'Las leyes de la física y la historia no se las llevará el viento.' },
+                gunpowder: { id: 'gunpowder', label: 'Pólvora Prohibida', req: 1500, researched: false, desc: 'Defensa de asedio +50%. Fatiga +20%.', flavor: 'Una mezcla volátil capaz de derrumbar murallas.' },
+                stellar_map: { id: 'stellar_map', label: 'Cúpula Astral', req: 3500, researched: false, desc: 'Costo de Reliquias -1 Fragmento.', flavor: 'Navegando el destino según la danza del firmamento.' }
             },
 
             // Héroes
@@ -2265,8 +2319,52 @@
 
         let scrollOffset = 0;
 
+        function getActiveCanvas() {
+            return (game.viewMode === 'fullscreen') ? bCanvas : tbCanvas;
+        }
+
+        function toCanvasX(pct) {
+            const canvas = getActiveCanvas();
+            const w = canvas.width;
+            if (game.viewMode === 'fullscreen') {
+                return pct * (w / 100);
+            } else {
+                // Taskbar Mode splits left 120px for the Tamagotchi village
+                return 120 + pct * ((w - 120) / 100);
+            }
+        }
+
+        function drawMiniBubble(ctx, x, y, text) {
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+                ctx.roundRect(x - 7, y - 11, 14, 9, 2);
+            } else {
+                ctx.rect(x - 7, y - 11, 14, 9);
+            }
+            ctx.fill();
+            ctx.stroke();
+
+            // Pointer
+            ctx.beginPath();
+            ctx.moveTo(x - 2, y - 2);
+            ctx.lineTo(x, y);
+            ctx.lineTo(x + 2, y - 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#000';
+            ctx.font = '7px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, x, y - 6.5);
+        }
+
         function renderBattlefield() {
-            const activeCanvas = (game.viewMode === 'fullscreen') ? bCanvas : tbCanvas;
+            const activeCanvas = getActiveCanvas();
             const ctx = activeCanvas.getContext('2d');
             
             if (game.viewMode === 'fullscreen') {
@@ -2287,27 +2385,221 @@
 
             ctx.imageSmoothingEnabled = false;
 
+            // DIBUJAR ALDEA TIPO POU/TAMAGOCHI EN EL WIDGET DE LA BARRA DE TAREAS (Izquierda 120px)
+            if (game.viewMode === 'taskbar') {
+                // 1. Cielo Gradiente de la aldea
+                const vilSky = ctx.createLinearGradient(0, 0, 0, h);
+                vilSky.addColorStop(0, conf.bg);
+                vilSky.addColorStop(1, '#0b0c16');
+                ctx.fillStyle = vilSky;
+                ctx.fillRect(0, 0, 120, h);
+
+                // 2. Estrellas parpadeantes
+                ctx.fillStyle = '#ffffff';
+                for (let i = 0; i < 6; i++) {
+                    let sx = (i * 29 + 7) % 115;
+                    let sy = (i * 13 + 5) % (h - 18);
+                    let size = (Math.sin(Date.now() * 0.003 + i) > 0.4) ? 1.0 : 0.5;
+                    ctx.fillRect(sx, sy, size, size);
+                }
+
+                // 3. Suelo de la aldea
+                ctx.fillStyle = conf.ground1;
+                ctx.fillRect(0, h - 14, 120, 14);
+                ctx.fillStyle = conf.borderCol;
+                ctx.fillRect(0, h - 14, 120, 1.5);
+
+                // 4. Torre de Babel Miniatura (Pou / Tamagotchi style)
+                const tX = 20;
+                const tW = 16;
+                const tLevels = game.era + 1;
+                const tFloorH = 6;
+                let wallBg = '#1f2937';
+                let strokeCol = '#4b5563';
+
+                if (game.era === 0) { wallBg = '#382215'; strokeCol = '#5c3a21'; }
+                else if (game.era === 1) { wallBg = '#78350f'; strokeCol = '#451a03'; }
+                else if (game.era === 2) { wallBg = '#451a03'; strokeCol = '#ca8a04'; }
+                else if (game.era === 3) { wallBg = '#1f2937'; strokeCol = '#4b5563'; }
+
+                for (let f = 0; f < 4; f++) {
+                    const fy = h - 14 - (f * tFloorH);
+                    if (f < tLevels) {
+                        ctx.fillStyle = wallBg;
+                        ctx.fillRect(tX - tW/2, fy - tFloorH, tW, tFloorH);
+                        ctx.strokeStyle = strokeCol;
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(tX - tW/2, fy - tFloorH, tW, tFloorH);
+
+                        // Window lit pixel
+                        ctx.fillStyle = (Math.sin(Date.now() * 0.005 + f) > 0) ? '#ca8a04' : '#facc15';
+                        ctx.fillRect(tX - 3, fy - tFloorH + 2, 2, 2);
+                        ctx.fillRect(tX + 1, fy - tFloorH + 2, 2, 2);
+                    } else {
+                        // Scaffoldings diagonal lines
+                        ctx.strokeStyle = 'rgba(120,53,4,0.4)';
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(tX - tW/2, fy);
+                        ctx.lineTo(tX + tW/2, fy - tFloorH);
+                        ctx.moveTo(tX + tW/2, fy);
+                        ctx.lineTo(tX - tW/2, fy - tFloorH);
+                        ctx.stroke();
+                    }
+                }
+                // Flag top
+                const topY = h - 14 - (tLevels * tFloorH);
+                let flagColor = '#3b82f6';
+                if (game.senda === 'espada') flagColor = '#ef4444';
+                else if (game.senda === 'mente') flagColor = '#06b6d4';
+                ctx.fillStyle = flagColor;
+                ctx.fillRect(tX, topY - 3, 4, 3);
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(tX, topY - 4, 1, 4);
+
+                // 5. Molino de viento Miniatura (x = 55)
+                const wmX = 55;
+                const wmY = h - 22;
+                ctx.fillStyle = '#78350f';
+                ctx.fillRect(wmX - 2, wmY, 4, 8);
+                const wmAngle = Date.now() * 0.002;
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 4; i++) {
+                    let a = wmAngle + (i * Math.PI / 2);
+                    ctx.beginPath();
+                    ctx.moveTo(wmX, wmY);
+                    ctx.lineTo(wmX + Math.cos(a) * 4, wmY + Math.sin(a) * 4);
+                    ctx.stroke();
+                }
+
+                // 6. Mercado Miniatura (x = 85)
+                const mX = 85;
+                ctx.fillStyle = '#b45309';
+                ctx.fillRect(mX - 4, h - 20, 8, 3);
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(mX - 5, h - 23, 10, 3);
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(mX - 4, h - 20, 1, 3);
+                ctx.fillRect(mX + 3, h - 20, 1, 3);
+
+                // 7. Simular ciudadanos miniatura (Pou / Tamagotchi)
+                if (!game.tbCitizens) {
+                    game.tbCitizens = [
+                        { x: 30, targetX: 30, state: 'idle', timer: 0, bubble: '', bubbleTimer: 0, outfitColor: '#3b82f6', skinColor: '#ffedd5', hairColor: '#78350f', step: 0, role: 'builder' },
+                        { x: 60, targetX: 60, state: 'idle', timer: 0, bubble: '', bubbleTimer: 0, outfitColor: '#ef4444', skinColor: '#fca5a5', hairColor: '#1e293b', step: 0, role: 'farmer' },
+                        { x: 90, targetX: 90, state: 'idle', timer: 0, bubble: '', bubbleTimer: 0, outfitColor: '#10b981', skinColor: '#d97706', hairColor: '#facc15', step: 0, role: 'merchant' }
+                    ];
+                }
+
+                game.tbCitizens.forEach(c => {
+                    c.step += 0.2;
+                    c.timer--;
+                    
+                    if (c.timer <= 0) {
+                        const roll = Math.random();
+                        if (roll < 0.35) {
+                            c.state = 'walking';
+                            c.targetX = 10 + Math.random() * 105;
+                            c.timer = 60 + Math.random() * 100;
+                        } else if (roll < 0.6) {
+                            c.state = 'working';
+                            c.timer = 40 + Math.random() * 60;
+                            const workBubbles = { builder: '🔨', farmer: '🌾', merchant: '🪙' };
+                            c.bubble = workBubbles[c.role] || '🛠️';
+                            c.bubbleTimer = c.timer;
+                        } else if (roll < 0.8) {
+                            c.state = 'socializing';
+                            c.timer = 30 + Math.random() * 40;
+                            const socialBubbles = ['❤️', '😊', '💬', '👋', '🌟'];
+                            c.bubble = socialBubbles[Math.floor(Math.random() * socialBubbles.length)];
+                            c.bubbleTimer = c.timer;
+                        } else {
+                            c.state = 'sleeping';
+                            c.timer = 50 + Math.random() * 80;
+                            c.bubble = '💤';
+                            c.bubbleTimer = c.timer;
+                        }
+                    }
+
+                    if (c.state === 'walking') {
+                        const dist = c.targetX - c.x;
+                        if (Math.abs(dist) > 1) {
+                            c.x += Math.sign(dist) * 0.45;
+                        } else {
+                            c.state = 'idle';
+                            c.timer = 20 + Math.random() * 30;
+                        }
+                    }
+
+                    const walkFrame = Math.floor(c.step) % 2;
+                    const cY = h - 14;
+
+                    ctx.fillStyle = c.skinColor;
+                    ctx.fillRect(c.x, cY - 7, 2, 2);
+                    ctx.fillStyle = c.hairColor;
+                    ctx.fillRect(c.x, cY - 8, 2, 1);
+                    ctx.fillStyle = c.outfitColor;
+                    ctx.fillRect(c.x - 1, cY - 5, 4, 3);
+                    ctx.fillStyle = '#000';
+                    if (c.state === 'sleeping') {
+                        ctx.fillRect(c.x - 2, cY - 2, 5, 2);
+                    } else {
+                        if (walkFrame === 0) {
+                            ctx.fillRect(c.x - 1, cY - 2, 1, 2);
+                            ctx.fillRect(c.x + 2, cY - 2, 1, 2);
+                        } else {
+                            ctx.fillRect(c.x, cY - 2, 1, 2);
+                            ctx.fillRect(c.x + 1, cY - 2, 1, 2);
+                        }
+                    }
+
+                    if (c.bubble && c.bubbleTimer > 0) {
+                        c.bubbleTimer--;
+                        drawMiniBubble(ctx, c.x + 1, cY - 10, c.bubble);
+                        if (c.bubbleTimer <= 0) c.bubble = '';
+                    }
+                });
+
+                // Separador visual de la aldea
+                ctx.fillStyle = conf.borderCol;
+                ctx.fillRect(120, 0, 3, h);
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(123, 0, 1, h);
+            }
+
+            // CAMPO DE BATALLA (Recortado en widget mode para no pisar la aldea)
+            ctx.save();
+            if (game.viewMode === 'taskbar') {
+                ctx.beginPath();
+                ctx.rect(124, 0, w - 124, h);
+                ctx.clip();
+            }
+
+            const bfX = (game.viewMode === 'taskbar') ? 124 : 0;
+            const bfW = (game.viewMode === 'taskbar') ? w - 124 : w;
+
             // Cielo
-            const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+            const skyGrad = ctx.createLinearGradient(bfX, 0, bfX, h);
             skyGrad.addColorStop(0, conf.bg);
             skyGrad.addColorStop(1, '#000');
             ctx.fillStyle = skyGrad;
-            ctx.fillRect(0, 0, w, h);
+            ctx.fillRect(bfX, 0, bfW, h);
 
             // Nubes lentas
             ctx.fillStyle = 'rgba(255,255,255,0.06)';
             const cloudOffset = (scrollOffset * 0.05) % 200;
-            ctx.fillRect(50 - cloudOffset, 10, 40, 6);
-            ctx.fillRect(160 - cloudOffset, 8, 30, 5);
+            ctx.fillRect(bfX + 50 - cloudOffset, 10, 40, 6);
+            ctx.fillRect(bfX + 160 - cloudOffset, 8, 30, 5);
 
             // Montañas lejanas
             ctx.fillStyle = 'rgba(25, 30, 45, 0.4)';
             const mountainOffset = (scrollOffset * 0.15) % 150;
-            for (let i = -1; i < w / 150 + 2; i++) {
-                const mx = i * 150 - mountainOffset;
+            for (let i = -1; i < bfW / 150 + 2; i++) {
+                const mx = bfX + i * 150 - mountainOffset;
                 ctx.beginPath();
                 ctx.moveTo(mx, h - 20);
-                ctx.lineTo(mx + 75, h - 50);
+                ctx.lineTo(mx + 75, h - (game.viewMode === 'taskbar' ? 35 : 50));
                 ctx.lineTo(mx + 150, h - 20);
                 ctx.fill();
             }
@@ -2315,27 +2607,27 @@
             // Árboles
             ctx.fillStyle = conf.ground2;
             const treeOffset = (scrollOffset * 0.4) % 80;
-            for (let i = -1; i < w / 80 + 2; i++) {
-                const tx = i * 80 - treeOffset;
+            for (let i = -1; i < bfW / 80 + 2; i++) {
+                const tx = bfX + i * 80 - treeOffset;
                 ctx.fillRect(tx + 10, h - 28, 4, 10);
                 ctx.beginPath();
                 ctx.moveTo(tx + 4, h - 28);
-                ctx.lineTo(tx + 12, h - 42);
+                ctx.lineTo(tx + 12, h - (game.viewMode === 'taskbar' ? 38 : 42));
                 ctx.lineTo(tx + 20, h - 28);
                 ctx.fill();
             }
 
             // Suelo
             ctx.fillStyle = conf.ground1;
-            ctx.fillRect(0, h - 20, w, 20);
+            ctx.fillRect(bfX, h - 20, bfW, 20);
             ctx.fillStyle = conf.borderCol;
-            ctx.fillRect(0, h - 20, w, 3); 
+            ctx.fillRect(bfX, h - 20, bfW, 3); 
 
             // Texturas camino
             ctx.fillStyle = 'rgba(0,0,0,0.15)';
             const groundOffset = scrollOffset % 40;
-            for (let i = -1; i < w / 40 + 2; i++) {
-                ctx.fillRect(i * 40 - groundOffset, h - 14, 8, 3);
+            for (let i = -1; i < bfW / 40 + 2; i++) {
+                ctx.fillRect(bfX + i * 40 - groundOffset, h - 14, 8, 3);
             }
 
             // Héroes
@@ -2348,7 +2640,7 @@
 
                 let animKey = `${hero.baseSprite}_${frameIndex}`;
                 let isCustom = (hero.sprite === 'custom');
-                let hX = hero.x * (w / 100);
+                let hX = toCanvasX(hero.x);
                 let bobY = (hero.state === 'walk') ? Math.sin(Date.now() * 0.015) * 1.5 : 0;
 
                 if (isCustom) {
@@ -2376,7 +2668,7 @@
             // Enemigos
             game.activeEnemies.forEach(enemy => {
                 let animKey = `${enemy.sprite}_${frameIndex}`;
-                let eX = enemy.x * (w / 100);
+                let eX = toCanvasX(enemy.x);
                 let bobY = Math.sin(Date.now() * 0.012 + 10) * 1.5;
 
                 drawSpriteKeyOnCanvas(ctx, animKey, eX, groundY + bobY, currentScale, true);
@@ -2407,7 +2699,7 @@
                 ctx.font = (game.viewMode === 'fullscreen') ? "bold 10px 'Press Start 2P'" : "7px 'Press Start 2P'";
                 ctx.shadowColor = '#000';
                 ctx.shadowBlur = 2;
-                ctx.fillText(ft.text, ft.x * (w / 100), ft.y);
+                ctx.fillText(ft.text, toCanvasX(ft.x), ft.y);
                 ctx.shadowBlur = 0;
                 
                 ft.y -= 0.8;
@@ -2416,6 +2708,8 @@
                     activeFloatingTexts.splice(idx, 1);
                 }
             });
+
+            ctx.restore(); // Restores clip state
 
             // Corte anime
             if (game.cutinTimer > 0) {
@@ -3214,11 +3508,12 @@
             setTimeout(() => document.getElementById('combo-feedback').innerText = "", 2500);
 
             setTimeout(() => {
+                const activeCanvas = getActiveCanvas();
                 if (game.activeEnemies.length > 0) {
                     game.activeEnemies.forEach(e => {
                         e.hp = Math.max(0, e.hp - 120);
                         for (let p=0; p<15; p++) {
-                            spawnParticle(e.x * (bCanvas.width/100), bCanvas.height - 40, '#facc15', (Math.random()-0.5)*10, -Math.random()*6);
+                            spawnParticle(toCanvasX(e.x), activeCanvas.height - 18, '#facc15', (Math.random()-0.5)*10, -Math.random()*6);
                         }
                     });
                     createFloatingText("💥 ¡DILUVIO SACRO -120 HP!", 50, "#facc15");
@@ -3573,6 +3868,13 @@
                 const card = document.createElement('div');
                 card.className = `tech-node ${tech.researched ? 'researched' : ''}`;
                 
+                card.setAttribute('data-tooltip-title', tech.label);
+                card.setAttribute('data-tooltip-desc', tech.desc);
+                card.setAttribute('data-tooltip-cost', tech.researched ? 'Investigado' : `Costo: 💡${tech.req} Ciencia`);
+                if (tech.flavor) {
+                    card.setAttribute('data-tooltip-flavor', `'${tech.flavor}'`);
+                }
+                
                 card.innerHTML = `
                     <div>
                         <div class="tech-title">${tech.label}</div>
@@ -3816,7 +4118,8 @@
 
                             // Spawneo particulas
                             for(let i=0; i<4; i++) {
-                                spawnParticle(nearest.x * (bCanvas.width/100), bCanvas.height - 40, '#ef4444', (Math.random()-0.5)*4, -2 - Math.random()*2);
+                                const activeCanvas = getActiveCanvas();
+                                spawnParticle(toCanvasX(nearest.x), activeCanvas.height - 18, '#ef4444', (Math.random()-0.5)*4, -2 - Math.random()*2);
                             }
 
                             // Daño contra héroes
@@ -4035,18 +4338,22 @@
         function renderRelics() {
             const container = document.getElementById('relics-list');
             let reduction = game.techTree.stellar_map.researched ? 1 : 0;
+            const costDmg = Math.max(1, (game.relics.damage+1)*3 - reduction);
+            const costGold = Math.max(1, (game.relics.gold+1)*3 - reduction);
+            const costSci = Math.max(1, (game.relics.science+1)*3 - reduction);
+
             container.innerHTML = `
-                <div style="display:flex; justify-content:space-between; font-size:11px;">
+                <div style="display:flex; justify-content:space-between; font-size:11px;" data-tooltip-title="🛡️ Espada del Firmamento" data-tooltip-desc="Reliquia permanente. Incrementa el daño de tus héroes en +25% por nivel." data-tooltip-cost="Nivel actual: ${game.relics.damage}">
                     <span>🛡️ Espada Sagrada (+25% daño): Lvl ${game.relics.damage}</span>
-                    <button class="btn-action-small" onclick="buyRelic('damage')" style="font-size:6px;">Lvl Up (💎${Math.max(1, (game.relics.damage+1)*3 - reduction)})</button>
+                    <button class="btn-action-small" onclick="buyRelic('damage')" style="font-size:6px;" data-tooltip-title="Subir Espada Sagrada" data-tooltip-desc="Aumentar el daño permanentemente." data-tooltip-cost="Costo: 💎${costDmg} Fragmentos">Lvl Up (💎${costDmg})</button>
                 </div>
-                <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px;">
+                <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px;" data-tooltip-title="🪙 Muro del Panteón" data-tooltip-desc="Reliquia permanente. Incrementa el oro obtenido al derrotar enemigos en +50% por nivel." data-tooltip-cost="Nivel actual: ${game.relics.gold}">
                     <span>🪙 Muro del Panteón (+50% oro): Lvl ${game.relics.gold}</span>
-                    <button class="btn-action-small" onclick="buyRelic('gold')" style="font-size:6px;">Lvl Up (💎${Math.max(1, (game.relics.gold+1)*3 - reduction)})</button>
+                    <button class="btn-action-small" onclick="buyRelic('gold')" style="font-size:6px;" data-tooltip-title="Subir Muro del Panteón" data-tooltip-desc="Aumentar las ganancias de oro permanentemente." data-tooltip-cost="Costo: 💎${costGold} Fragmentos">Lvl Up (💎${costGold})</button>
                 </div>
-                <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px;">
+                <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px;" data-tooltip-title="💡 Cúpula Astral" data-tooltip-desc="Reliquia permanente. Incrementa la generación de ciencia pasiva en +25% por nivel." data-tooltip-cost="Nivel actual: ${game.relics.science}">
                     <span>💡 Cúpula Astral (+25% ciencia): Lvl ${game.relics.science}</span>
-                    <button class="btn-action-small" onclick="buyRelic('science')" style="font-size:6px;">Lvl Up (💎${Math.max(1, (game.relics.science+1)*3 - reduction)})</button>
+                    <button class="btn-action-small" onclick="buyRelic('science')" style="font-size:6px;" data-tooltip-title="Subir Cúpula Astral" data-tooltip-desc="Aumentar la generación de ciencia permanentemente." data-tooltip-cost="Costo: 💎${costSci} Fragmentos">Lvl Up (💎${costSci})</button>
                 </div>
             `;
         }
@@ -5018,6 +5325,62 @@
             }
         });
 
+        // --- SISTEMA DE TOOLTIPS PREMIUM ---
+        document.addEventListener('mouseover', (e) => {
+            const target = e.target.closest('[data-tooltip-title]');
+            if (!target) return;
+
+            const title = target.getAttribute('data-tooltip-title');
+            const desc = target.getAttribute('data-tooltip-desc') || '';
+            const cost = target.getAttribute('data-tooltip-cost') || '';
+            const flavor = target.getAttribute('data-tooltip-flavor') || '';
+
+            const tooltip = document.getElementById('custom-tooltip');
+            if (!tooltip) return;
+
+            let html = `<div class="tooltip-title">${title}</div>`;
+            if (desc) html += `<div class="tooltip-desc">${desc}</div>`;
+            if (cost) html += `<div class="tooltip-cost">${cost}</div>`;
+            if (flavor) html += `<div class="tooltip-flavor">${flavor}</div>`;
+
+            tooltip.innerHTML = html;
+            tooltip.style.display = 'block';
+            
+            positionTooltip(e, tooltip);
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            const tooltip = document.getElementById('custom-tooltip');
+            if (tooltip && tooltip.style.display === 'block') {
+                positionTooltip(e, tooltip);
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const target = e.target.closest('[data-tooltip-title]');
+            if (target) {
+                const tooltip = document.getElementById('custom-tooltip');
+                if (tooltip) tooltip.style.display = 'none';
+            }
+        });
+
+        function positionTooltip(e, tooltip) {
+            const tooltipW = tooltip.offsetWidth;
+            const tooltipH = tooltip.offsetHeight;
+            let x = e.clientX + 15;
+            let y = e.clientY + 15;
+
+            // Overflow screen bounds check
+            if (x + tooltipW > window.innerWidth) {
+                x = e.clientX - tooltipW - 15;
+            }
+            if (y + tooltipH > window.innerHeight) {
+                y = e.clientY - tooltipH - 15;
+            }
+
+            tooltip.style.left = `${Math.max(0, x)}px`;
+            tooltip.style.top = `${Math.max(0, y)}px`;
+        }
 
         // --- INICIALIZACIÓN ---
         window.onload = function() {
